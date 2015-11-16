@@ -1,6 +1,60 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical" android:layout_width="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
     android:layout_height="match_parent">
+
+    <android.support.v7.widget.Toolbar
+        android:id="@+id/setting_toolbar"
+        android:background="@color/colorAccent"
+        android:layout_width="match_parent"
+        android:layout_height="?attr/actionBarSize">
+
+    </android.support.v7.widget.Toolbar>
+
+    <LinearLayout
+        android:padding="16dp"
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <com.rey.material.widget.Spinner
+            android:id="@+id/setting_spinner_province"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:minWidth="128dp"
+            android:padding="8dp"
+            style="@style/LightSpinner"
+            app:spn_label="省/直辖市" />
+
+        <com.rey.material.widget.Spinner
+            android:id="@+id/setting_spinner_city"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:minWidth="128dp"
+            android:padding="8dp"
+            style="@style/LightSpinner"
+            app:spn_label="市" />
+
+        <com.rey.material.widget.Spinner
+            android:id="@+id/setting_spinner_county"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:minWidth="128dp"
+            android:padding="8dp"
+            style="@style/LightSpinner"
+            app:spn_label="县/区" />
+
+        <com.rey.material.widget.Button
+            android:id="@+id/button"
+            android:text="确定"
+            android:textColor="@color/general_white"
+            android:background="@color/colorAccent"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+
+    </LinearLayout>
+
 
 </LinearLayout>
