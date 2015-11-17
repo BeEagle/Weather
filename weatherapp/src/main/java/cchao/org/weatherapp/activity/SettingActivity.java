@@ -2,6 +2,7 @@ package cchao.org.weatherapp.activity;
 
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
@@ -64,8 +65,9 @@ public class SettingActivity extends AppCompatActivity{
         countrySpinner = (Spinner) findViewById(R.id.setting_spinner_county);
         button = (Button) findViewById(R.id.button);
 
+        mToolbar.setTitle("Setting");
+        mToolbar.setTitleTextColor(Color.WHITE);
         setSupportActionBar(mToolbar);
-        getSupportActionBar().setTitle("设置地点");
         mToolbar.setNavigationIcon(R.drawable.ic_keyboard_arrow_left_white_48dp);
         mToolbar.setNavigationOnClickListener(new View.OnClickListener() {
             @Override
