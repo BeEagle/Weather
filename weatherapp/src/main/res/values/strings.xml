@@ -1,5 +1,12 @@
 <resources>
     <string name="app_name">WeatherApp</string>
 
+    <!-- MainActivity-->
     <string name="main_snackbar_ID_isEmpty">请先设置地区!</string>
+
+    <!-- SettingActivity-->
+    <string name="setting_spinner_label_province">省/直辖市</string>
+    <string name="setting_spinner_label_city">市</string>
+    <string name="setting_spinner_label_country">县/区</string>
+    <string name="setting_ok">确定</string>
 </resources>

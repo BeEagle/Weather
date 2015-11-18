@@ -1,14 +1,18 @@
 package cchao.org.weatherapp.activity;
 
 import android.content.Intent;
+import android.content.res.Resources;
 import android.graphics.Color;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.ImageView;
 import android.widget.Toast;
 
 import cchao.org.weatherapp.R;
@@ -40,14 +44,13 @@ public class MainActivity extends AppCompatActivity{
         setSupportActionBar(mToolbar);
 
         cache = new Cache(this);
-        //final Animation floating_animation = AnimationUtils.loadAnimation(MainActivity.this, R.anim.floating_out);
 
         mFloatingActionButton = (FloatingActionButton) findViewById(R.id.fab);
 
         mFloatingActionButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(cache.get(Constant.CITY_ID).isEmpty() || cache.get(Constant.CITY_ID).equals("")){
+                if (cache.get(Constant.CITY_ID).isEmpty() || cache.get(Constant.CITY_ID).equals("")) {
                     Toast.makeText(MainActivity.this, R.string.main_snackbar_ID_isEmpty, Toast.LENGTH_SHORT).show();
                     startActivity(new Intent(MainActivity.this, SettingActivity.class));
                 } else {
@@ -56,6 +59,19 @@ public class MainActivity extends AppCompatActivity{
                 }
             }
         });
+    }
+
+    /**
+     * 获取天气图标
+     * @param imageName 天气名称(数字)
+     * @return
+     */
+    private Drawable getImage(String imageName) {
+        int id = getResources().getIdentifier("w" + imageName, "drawable", "cchao.org.weatherapp");
+        if(id != 0){
+            return getResources().getDrawable(id);
+        }
+        return getResources().getDrawable(getResources().getIdentifier("w999", "drawable", "cchao.org.weatherapp"));
     }
 
     @Override

@@ -6,16 +6,38 @@
 
     <android.support.v7.widget.Toolbar
         android:id="@+id/main_toolbar"
-        android:background="@color/colorAccent"
+        android:background="@color/background"
         android:layout_width="match_parent"
         android:layout_height="?attr/actionBarSize">
 
     </android.support.v7.widget.Toolbar>
-    
+
+    <LinearLayout
+        android:id="@+id/now_linear"
+        android:orientation="horizontal"
+        android:background="@color/background"
+        android:layout_below="@+id/main_toolbar"
+        android:layout_alignParentBottom="true"
+        android:layout_marginBottom="128dp"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+
+    </LinearLayout>
+
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/forecast_recycler"
+        android:layout_below="@+id/now_linear"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+
+    </android.support.v7.widget.RecyclerView>
+
     <android.support.design.widget.FloatingActionButton
         android:id="@+id/fab"
-        android:layout_marginRight="16dp"
-        android:layout_marginBottom="16dp"
+        android:layout_marginRight="@dimen/margin"
+        android:layout_marginBottom="100dp"
         android:src="@drawable/ic_autorenew_white_48dp"
         android:layout_alignParentBottom="true"
         android:layout_alignParentRight="true"

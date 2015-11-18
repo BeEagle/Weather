@@ -26,7 +26,7 @@ public class Cache {
 
     /**
      * 保存
-     * @param mark  标示
+     * @param mark  标识
      * @param data  保存数据
      */
     public void save(String mark, String data) {
@@ -36,7 +36,7 @@ public class Cache {
 
     /**
      * 获取
-     * @param mark  标示
+     * @param mark  标识
      * @return
      */
     public String get(String mark) {

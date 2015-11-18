@@ -6,7 +6,7 @@
 
     <android.support.v7.widget.Toolbar
         android:id="@+id/setting_toolbar"
-        android:background="@color/colorAccent"
+        android:background="@color/background"
         android:layout_width="match_parent"
         android:layout_height="?attr/actionBarSize">
 
@@ -15,7 +15,7 @@
     <LinearLayout
         android:layout_alignParentTop="true"
         android:layout_marginTop="?attr/actionBarSize"
-        android:padding="16dp"
+        android:padding="@dimen/padding"
         android:orientation="vertical"
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
@@ -24,34 +24,39 @@
             android:id="@+id/setting_spinner_province"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:minWidth="128dp"
-            android:padding="8dp"
+            android:minWidth="@dimen/spinner_minwidth"
+            android:padding="@dimen/padding"
             style="@style/LightSpinner"
-            app:spn_label="省/直辖市" />
+            app:spn_labelTextSize="@dimen/normal_text_size"
+            app:spn_label="@string/setting_spinner_label_province" />
 
         <com.rey.material.widget.Spinner
             android:id="@+id/setting_spinner_city"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:minWidth="128dp"
-            android:padding="8dp"
+            android:minWidth="@dimen/spinner_minwidth"
+            android:padding="@dimen/padding"
             style="@style/LightSpinner"
-            app:spn_label="市" />
+            app:spn_labelTextSize="@dimen/normal_text_size"
+            app:spn_label="@string/setting_spinner_label_city" />
 
         <com.rey.material.widget.Spinner
             android:id="@+id/setting_spinner_county"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:minWidth="128dp"
-            android:padding="8dp"
+            android:minWidth="@dimen/spinner_minwidth"
+            android:padding="@dimen/padding"
             style="@style/LightSpinner"
-            app:spn_label="县/区" />
+            app:spn_labelTextSize="@dimen/normal_text_size"
+            app:spn_label="@string/setting_spinner_label_country" />
 
         <com.rey.material.widget.Button
+            android:layout_marginTop="@dimen/padding"
             android:id="@+id/button"
-            android:text="确定"
+            android:text="@string/setting_ok"
+            android:textSize="@dimen/big_text_size"
             android:textColor="@color/general_white"
-            android:background="@color/colorAccent"
+            android:background="@color/background"
             android:layout_width="match_parent"
             android:layout_height="wrap_content" />
 

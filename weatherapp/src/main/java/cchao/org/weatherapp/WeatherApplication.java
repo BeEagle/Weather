@@ -5,6 +5,8 @@ import android.app.Application;
 import com.android.volley.RequestQueue;
 import com.android.volley.toolbox.Volley;
 
+import cchao.org.weatherapp.utils.Cache;
+
 /**
  * Created by chenchao on 15/11/13.
  */

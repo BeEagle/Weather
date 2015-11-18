@@ -9,6 +9,10 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.util.HashMap;
 import java.util.Map;
 
@@ -35,12 +39,12 @@ public class HttpUtil {
                 new Response.Listener<String>() {
                     @Override
                     public void onResponse(String response) {
-                        Log.i("weather", response);
+                        SaveData.saveResponse(response);
                     }
                 }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
-                Log.i("weatherapp", error.getMessage());
+                Log.i("weatherapp", error.toString());
             }
         }){
             protected Map<String,String> getParams() throws AuthFailureError {
@@ -52,4 +56,5 @@ public class HttpUtil {
         };
         WeatherApplication.getInstance().requestQueue.add(stringRequest);
     }
+
 }
