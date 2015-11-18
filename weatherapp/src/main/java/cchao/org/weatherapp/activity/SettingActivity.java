@@ -1,11 +1,13 @@
 package cchao.org.weatherapp.activity;
 
+import android.content.Intent;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.Toast;
@@ -46,13 +48,15 @@ public class SettingActivity extends AppCompatActivity{
     private List<String> areaid, areaname;
 
     //选中城市id
-    private String citycode;
+    private String citycode = null;
 
     //选中城市
-    private String citycode_name;
+    private String citycode_name = null;
 
     //缓存数据
     private Cache cache;
+
+    private int clickItemNum;
 
     @Override
     protected void onCreate(Bundle saveBundle) {
@@ -68,21 +72,23 @@ public class SettingActivity extends AppCompatActivity{
         mToolbar.setTitle("Setting");
         mToolbar.setTitleTextColor(Color.WHITE);
         setSupportActionBar(mToolbar);
-        mToolbar.setNavigationIcon(R.drawable.ic_keyboard_arrow_left_white_48dp);
+        mToolbar.setNavigationIcon(R.drawable.ic_home_white_36dp);
         mToolbar.setNavigationOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                finish();
+                startActivity(new Intent(SettingActivity.this, MainActivity.class));
             }
         });
 
         button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                citycode_name = areaname.get(clickItemNum).toString();
+                citycode = cityCodeDB.getCityCode(db, areaid.get(clickItemNum)
+                        .toString());
                 cache.save(Constant.CITY_ID, citycode);
                 cache.save(Constant.CITY_NAME, citycode_name);
-                finish();
-                //Toast.makeText(SettingActivity.this, citycode + citycode_name, Toast.LENGTH_SHORT).show();
+                startActivity(new Intent(SettingActivity.this, MainActivity.class));
             }
         });
 
@@ -103,13 +109,27 @@ public class SettingActivity extends AppCompatActivity{
         areaid = new ArrayList<>();
         areaname = new ArrayList<>();
 
-        initProvinceSpinner(db);
-        initCitySpinner(db, "01");
-        initAreaSpinner(db, "0101");
+        clickItemNum = 0;
+
+        //初始化城市选择Spinner
+        String tempCode = cityCodeDB.getCityId(db, cache.get(Constant.CITY_ID));
+        if (tempCode != "" && tempCode != null) {
+            initProvinceSpinner(db, tempCode.substring(0, 2));
+            initCitySpinner(db, tempCode.substring(0, 2), tempCode.substring(2, 4));
+            initAreaSpinner(db, tempCode.substring(0, 4), tempCode.substring(4, 6));
+        } else {
+            initProvinceSpinner(db, "01");
+            initCitySpinner(db, "01", "01");
+            initAreaSpinner(db, "0101", "01");
+        }
     }
 
-    // 初始化省/直辖市Spinner
-    private void initProvinceSpinner(SQLiteDatabase database) {
+    /**
+     * 初始化省/直辖市Spinner
+     * @param database  数据库
+     * @param initProvinceId    初始化的省id
+     */
+    private void initProvinceSpinner(SQLiteDatabase database, String initProvinceId) {
         Cursor provincecursor = cityCodeDB.getAllProvince(database);
 
         if (provincecursor != null) {
@@ -130,17 +150,23 @@ public class SettingActivity extends AppCompatActivity{
         ArrayAdapter<String> adapter = new ArrayAdapter<>(this, R.layout.row_spn, provincename);
         adapter.setDropDownViewResource(R.layout.row_spn_dropdown);
         provinceSpinner.setAdapter(adapter);
+        provinceSpinner.setSelection(Integer.valueOf(initProvinceId) - 1);
         provinceSpinner.setOnItemSelectedListener(new Spinner.OnItemSelectedListener() {
             @Override
             public void onItemSelected(Spinner parent, View view, int position, long id) {
-                initCitySpinner(db, provinceid.get(position).toString());
-                initAreaSpinner(db, provinceid.get(position).toString() + "01");
+                initCitySpinner(db, provinceid.get(position).toString(), "01");
+                initAreaSpinner(db, provinceid.get(position).toString() + "01", "01");
             }
         });
     }
 
-    // 初始化市Spinner
-    private void initCitySpinner(SQLiteDatabase database, String provinceid) {
+    /**
+     * 初始化市Spinner
+     * @param database  数据库
+     * @param provinceid    选择的省id
+     * @param initCityId    初始化的市id
+     */
+    private void initCitySpinner(SQLiteDatabase database, String provinceid, String initCityId) {
         Cursor citycursor = cityCodeDB.getCity(database, provinceid);
         if (citycursor != null) {
             cityid.clear();
@@ -162,16 +188,22 @@ public class SettingActivity extends AppCompatActivity{
         ArrayAdapter<String> adapter = new ArrayAdapter<>(this, R.layout.row_spn, cityname);
         adapter.setDropDownViewResource(R.layout.row_spn_dropdown);
         citySpinner.setAdapter(adapter);
+        citySpinner.setSelection(Integer.valueOf(initCityId) - 1);
         citySpinner.setOnItemSelectedListener(new Spinner.OnItemSelectedListener() {
             @Override
             public void onItemSelected(Spinner parent, View view, int position, long id) {
-                initAreaSpinner(db, cityid.get(position).toString());
+                initAreaSpinner(db, cityid.get(position).toString(), "01");
             }
         });
     }
 
-    // 初始化地区Spinner,同时获取城市码
-    private void initAreaSpinner(SQLiteDatabase database, String cityid) {
+    /**
+     * 初始化地区Spinner,同时获取城市码
+     * @param database  数据库
+     * @param cityid    选择的市id
+     * @param initAreaId    初始化的地区id
+     */
+    private void initAreaSpinner(SQLiteDatabase database, String cityid, String initAreaId) {
         Cursor areacursor = cityCodeDB.getArea(database, cityid);
         if (areacursor != null) {
             areaid.clear();
@@ -193,13 +225,18 @@ public class SettingActivity extends AppCompatActivity{
         ArrayAdapter<String> adapter = new ArrayAdapter<>(this, R.layout.row_spn, areaname);
         adapter.setDropDownViewResource(R.layout.row_spn_dropdown);
         countrySpinner.setAdapter(adapter);
+        countrySpinner.setSelection(Integer.valueOf(initAreaId) - 1);
         countrySpinner.setOnItemSelectedListener(new Spinner.OnItemSelectedListener() {
             @Override
             public void onItemSelected(Spinner parent, View view, int position, long id) {
-                citycode_name = areaname.get(position).toString();
-                citycode = cityCodeDB.getCityCode(db, areaid.get(position)
-                        .toString());
+                clickItemNum = position;
             }
         });
+    }
+
+    @Override
+    protected void onPause(){
+        super.onPause();
+        finish();
     }
 }
