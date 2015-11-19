@@ -1,7 +1,6 @@
 package cchao.org.weatherapp.activity;
 
 import android.content.Intent;
-import android.content.res.Resources;
 import android.graphics.Color;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
@@ -12,13 +11,14 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.ImageView;
 import android.widget.Toast;
 
 import cchao.org.weatherapp.R;
+import cchao.org.weatherapp.utils.BaseUri;
 import cchao.org.weatherapp.utils.Cache;
 import cchao.org.weatherapp.utils.Constant;
 import cchao.org.weatherapp.utils.HttpUtil;
+import cchao.org.weatherapp.utils.SaveData;
 
 /**
  * Created by chenchao on 15/11/13.
@@ -28,8 +28,6 @@ public class MainActivity extends AppCompatActivity{
     private Toolbar mToolbar;
 
     private FloatingActionButton mFloatingActionButton;
-
-    private HttpUtil httpUtil;
 
     private Cache cache;
 
@@ -54,11 +52,26 @@ public class MainActivity extends AppCompatActivity{
                     Toast.makeText(MainActivity.this, R.string.main_snackbar_ID_isEmpty, Toast.LENGTH_SHORT).show();
                     startActivity(new Intent(MainActivity.this, SettingActivity.class));
                 } else {
-                    httpUtil = new HttpUtil(MainActivity.this, "CN" + cache.get(Constant.CITY_ID));
-                    httpUtil.getWeather();
+                    getWeather();
                 }
             }
         });
+    }
+
+    private void getWeather() {
+        try{
+            HttpUtil.doPostAsyn(BaseUri.getWeatherUri()
+                    , "cityid=CN" + cache.get(Constant.CITY_ID) + "&key=" + Constant.KEY
+                    , new HttpUtil.CallBack() {
+                @Override
+                public void onRequestComplete(String result) {
+                    Log.i("weather", result);
+                    SaveData.saveResponse(result);
+                }
+            });
+        }catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     /**

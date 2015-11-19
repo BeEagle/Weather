@@ -4,6 +4,8 @@ package cchao.org.weatherapp.utils;
  * Created by chenchao on 15/11/16.
  */
 public class Constant {
+    //获取天气key
+    public static String KEY = "20fe7c4fb5e240c6a973d6de3a321907";
     //城市码
     public static String CITY_ID = "cityId";
     //城市名字

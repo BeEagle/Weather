@@ -19,7 +19,7 @@ public class SaveData {
             JSONArray weatherArray = weatherObj.getJSONArray("HeWeather data service 3.0");
             JSONObject jsonObject = weatherArray.getJSONObject(0);
             //空气质量指数
-            JSONObject aqi_obj = jsonObject.getJSONObject("aqi");
+            //JSONObject aqi_obj = jsonObject.getJSONObject("aqi");
             //城市基本信息
             JSONObject basic_obj = jsonObject.getJSONObject("basic");
             //实况天气
@@ -31,9 +31,9 @@ public class SaveData {
             //每小时天气预报
             JSONArray hourly_forecast_array = jsonObject.getJSONArray("hourly_forecast");
 
-            cache.save(Constant.AQI, aqi_obj.getJSONObject("city").getString("aqi"));
-            cache.save(Constant.PM25, aqi_obj.getJSONObject("city").getString("pm25"));
-            cache.save(Constant.QLTY, aqi_obj.getJSONObject("city").getString("qlty"));
+            //cache.save(Constant.AQI, aqi_obj.getJSONObject("city").getString("aqi"));
+            //cache.save(Constant.PM25, aqi_obj.getJSONObject("city").getString("pm25"));
+            //cache.save(Constant.QLTY, aqi_obj.getJSONObject("city").getString("qlty"));
 
             cache.save(Constant.NOW_TMP, now_obj.getString("tmp"));
             cache.save(Constant.NOW_CODE, now_obj.getJSONObject("cond").getString("code"));
