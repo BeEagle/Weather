@@ -7,6 +7,7 @@ import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.view.KeyEvent;
 import android.view.View;
 import android.widget.ArrayAdapter;
 
@@ -74,7 +75,7 @@ public class SettingActivity extends AppCompatActivity{
         mToolbar.setNavigationOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                startActivity(new Intent(SettingActivity.this, MainActivity.class));
+                finish();
             }
         });
 
@@ -86,7 +87,8 @@ public class SettingActivity extends AppCompatActivity{
                         .toString());
                 cache.save(Constant.CITY_ID, citycode);
                 cache.save(Constant.CITY_NAME, citycode_name);
-                startActivity(new Intent(SettingActivity.this, MainActivity.class));
+                setResult(100);
+                finish();
             }
         });
 
@@ -235,6 +237,14 @@ public class SettingActivity extends AppCompatActivity{
     @Override
     protected void onPause(){
         super.onPause();
-        finish();
+    }
+
+    @Override
+    public boolean onKeyDown(int keyCode, KeyEvent event) {
+        if (keyCode == KeyEvent.KEYCODE_BACK) {
+            finish();
+            return true;
+        }
+        return super.onKeyDown(keyCode, event);
     }
 }

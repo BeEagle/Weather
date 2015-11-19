@@ -4,6 +4,7 @@
     <dimen name="padding">16dp</dimen>
 
     <dimen name="spinner_minwidth">128dp</dimen>
+    <dimen name="float_bottom">128dp</dimen>
     
     <!-- text-->
     <dimen name="normal_text_size">16sp</dimen>

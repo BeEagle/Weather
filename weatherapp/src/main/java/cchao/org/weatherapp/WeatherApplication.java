@@ -6,6 +6,7 @@ import android.app.Application;
  * Created by chenchao on 15/11/13.
  */
 public class WeatherApplication extends Application{
+
     private static WeatherApplication instance;
 
     @Override

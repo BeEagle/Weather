@@ -4,6 +4,12 @@
     <color name="colorPrimaryDark">#303F9F</color>
     <color name="colorAccent">#FF4081</color>
 
+    <array name="in_colors_light">
+        <item>#4BFF4081</item>
+        <item>#33FF4081</item>
+        <item>#19FF4081</item>
+    </array>
+
     <color name="background">#303F9F</color>
 
     <color name="colorPrimaryHalf">#90303F9F</color>
