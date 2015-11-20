@@ -8,6 +8,8 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.support.design.widget.FloatingActionButton;
+import android.support.v4.app.FragmentTransaction;
+import android.support.v4.app.FragmentManager;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
@@ -15,7 +17,6 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
-import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -26,6 +27,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import cchao.org.weatherapp.R;
+import cchao.org.weatherapp.fragment.DailyFragnment;
 import cchao.org.weatherapp.utils.BaseUri;
 import cchao.org.weatherapp.utils.Cache;
 import cchao.org.weatherapp.utils.Constant;
@@ -42,8 +44,6 @@ public class MainActivity extends AppCompatActivity implements Handler.Callback{
 
     private Toolbar mToolbar;
 
-    private FloatingActionButton mFloatingActionButton;
-
     //现在温度
     private TextView nowTmp;
     //现在天气状况
@@ -57,11 +57,11 @@ public class MainActivity extends AppCompatActivity implements Handler.Callback{
     //穿衣提示
     private TextView suggestionTxt;
 
-    private ProgressView progressView;
-
     private Cache cache;
 
     private Handler myHandle;
+
+    private ProgressDialog progressDialog;
 
     @Override
     protected void onCreate(Bundle saveBundle) {
@@ -72,36 +72,17 @@ public class MainActivity extends AppCompatActivity implements Handler.Callback{
         myHandle = new Handler(this);
 
         mToolbar = (Toolbar) findViewById(R.id.main_toolbar);
-        if (cache.get(Constant.CITY_NAME) != "") {
-            mToolbar.setTitle(cache.get(Constant.CITY_NAME));
-        } else {
-            mToolbar.setTitle("Weather");
-        }
         mToolbar.setTitleTextColor(Color.WHITE);
         setSupportActionBar(mToolbar);
 
-        mFloatingActionButton = (FloatingActionButton) findViewById(R.id.fab);
         nowTmp = (TextView) findViewById(R.id.textview_now_tmp);
         nowCond = (TextView) findViewById(R.id.textview_now_cond);
         nowCondImage = (ImageView) findViewById(R.id.imageview_now_cond);
         windDir = (TextView) findViewById(R.id.textview_dir);
         windSc = (TextView) findViewById(R.id.textview_sc);
         suggestionTxt = (TextView) findViewById(R.id.textview_suggestion_txt);
-        progressView = (ProgressView) findViewById(R.id.progress);
 
-        mFloatingActionButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (cache.get(Constant.CITY_ID).isEmpty() || cache.get(Constant.CITY_ID).equals("")) {
-                    Toast.makeText(MainActivity.this, R.string.main_snackbar_ID_isEmpty, Toast.LENGTH_SHORT).show();
-                    startActivityForResult(new Intent(MainActivity.this, SettingActivity.class), STARTACTIVITYRESULT);
-                    //startActivity(new Intent(MainActivity.this, SettingActivity.class));
-                } else {
-                    getWeather();
-                }
-            }
-        });
-
+        progressDialog = ProgressDialog.show(this, "请稍等", "刷新中...");
         updateWeather();
     }
 
@@ -117,18 +98,43 @@ public class MainActivity extends AppCompatActivity implements Handler.Callback{
         return false;
     }
 
+    /**
+     * 更新界面
+     */
     private void updateWeather() {
-        nowTmp.setText(cache.get(Constant.NOW_TMP));
+        if (cache.get(Constant.CITY_NAME) != "") {
+            getSupportActionBar().setTitle(cache.get(Constant.CITY_NAME));
+        } else {
+            getSupportActionBar().setTitle("Weather");
+        }
+        nowTmp.setText(cache.get(Constant.NOW_TMP) + "°");
         nowCond.setText(cache.get(Constant.NOW_COND));
         nowCondImage.setImageDrawable(getImage(cache.get(Constant.NOW_CODE)));
         windDir.setText(cache.get(Constant.NOW_WIND_DIR));
         windSc.setText(cache.get(Constant.NOW_WIND_SC));
         suggestionTxt.setText(cache.get(Constant.SUGGESTION_DRSG));
-        progressView.stop();
+        //setFragment();
+        if(progressDialog.isShowing()) {
+            progressDialog.dismiss();
+        }
     }
 
+    /**
+     * 设置天气预报Fragment
+     */
+//    private void setFragment() {
+//        FragmentManager mFragmentManager = getSupportFragmentManager();
+//        FragmentTransaction mFragmentTransaction = mFragmentManager.beginTransaction();
+//        DailyFragnment dailyFragnment = new DailyFragnment();
+//        mFragmentTransaction.replace(R.id.framelayout, dailyFragnment);
+//        mFragmentTransaction.commit();
+//    }
+
+    /**
+     * 从服务器获取天气信息
+     */
     private void getWeather() {
-        progressView.start();
+        progressDialog.show();
         try{
             HttpUtil.doPostAsyn(BaseUri.getWeatherUri()
                     , "cityid=CN" + cache.get(Constant.CITY_ID) + "&key=" + Constant.KEY
@@ -144,6 +150,10 @@ public class MainActivity extends AppCompatActivity implements Handler.Callback{
         }
     }
 
+    /**
+     * 保存天气信息到本地
+     * @param data
+     */
     private void saveResponse(String data) {
         try {
             JSONObject weatherObj = new JSONObject(data);
@@ -222,6 +232,13 @@ public class MainActivity extends AppCompatActivity implements Handler.Callback{
         if (id == R.id.menu_main_location) {
             startActivityForResult(new Intent(MainActivity.this, SettingActivity.class), STARTACTIVITYRESULT);
             return true;
+        } else if(id == R.id.menu_main_refresh) {
+            if (cache.get(Constant.CITY_ID).isEmpty() || cache.get(Constant.CITY_ID).equals("")) {
+                Toast.makeText(MainActivity.this, R.string.main_snackbar_ID_isEmpty, Toast.LENGTH_SHORT).show();
+                startActivityForResult(new Intent(MainActivity.this, SettingActivity.class), STARTACTIVITYRESULT);
+            } else {
+                getWeather();
+            }
         }
         return super.onOptionsItemSelected(item);
     }
