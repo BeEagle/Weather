@@ -5,12 +5,12 @@ import android.content.Context;
 import android.content.SharedPreferences;
 
 /**
- * 缓存数据类
- * Created by chenchao on 15/11/16.
+ * 操作SharedPreferences
+ * Created by chenchao on 15/11/27.
  */
-public class Cache {
+public class SharedPreferencesUtil {
 
-    private final String CACHE = "cache";
+    private final String WEATHER_MESSAGE = "weatherMsg";
 
     private Context context;
 
@@ -18,9 +18,9 @@ public class Cache {
 
     private SharedPreferences.Editor editor;
 
-    public Cache(Context context) {
+    public SharedPreferencesUtil(Context context) {
         this.context = context;
-        sharedPreferences = context.getSharedPreferences(CACHE, Activity.MODE_PRIVATE);
+        sharedPreferences = context.getSharedPreferences(WEATHER_MESSAGE, Activity.MODE_PRIVATE);
         editor = sharedPreferences.edit();
     }
 

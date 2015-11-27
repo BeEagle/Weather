@@ -5,8 +5,8 @@
     android:layout_width="match_parent"
     android:layout_height="48dp"
     android:gravity="center_vertical"
-    android:paddingLeft="16dp"
-    android:paddingRight="16dp"
+    android:paddingLeft="@dimen/padding"
+    android:paddingRight="@dimen/padding"
     style="@style/LightSpinnerItem"
     android:textDirection="locale" />
 

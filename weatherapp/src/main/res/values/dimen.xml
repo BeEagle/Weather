@@ -1,5 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <!-- evation-->
+    <dimen name="toolbar_z">4dp</dimen>
+    <dimen name="button_resting_z">2dp</dimen>
+    <dimen name="button_pressed_z">8dp</dimen>
+    <dimen name="dialog_z">24dp</dimen>
+    
     <dimen name="margin">16dp</dimen>
     <dimen name="padding">16dp</dimen>
 
@@ -9,4 +15,8 @@
     <!-- text-->
     <dimen name="normal_text_size">16sp</dimen>
     <dimen name="big_text_size">18sp</dimen>
+    <dimen name="big_big_text_size">20sp</dimen>
+
+    <dimen name="setting_weather_icon_width">80dp</dimen>
+    <dimen name="setting_weather_icon_height">80dp</dimen>
 </resources>

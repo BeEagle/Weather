@@ -8,8 +8,10 @@ import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.util.Map;
 
 /**
+ * 网络请求类
  * Created by chenchao on 15/11/13.
  */
 public class HttpUtil {
@@ -42,7 +44,7 @@ public class HttpUtil {
     /**
      * 异步的Post请求
      * @param urlStr
-     * @param params
+     * @param params 参数，形如cityid=475847&key=23423
      * @param callBack
      * @throws Exception
      */
@@ -62,6 +64,33 @@ public class HttpUtil {
         }.start();
     }
 
+    /**
+     * 异步Post请求
+     * @param urlStr
+     * @param map   map型参数
+     * @param callBack
+     * @throws Exception
+     */
+    public static void doPostAsyn(final String urlStr, final Map<String, String> map,
+                                  final CallBack callBack) throws Exception {
+        new Thread() {
+            public void run() {
+                try {
+                    StringBuffer params = new StringBuffer();
+                    for (Map.Entry<String, String> mapParam : map.entrySet()) {
+                        params.append(mapParam.getKey() + "=" + mapParam.getValue() + "&");
+                    }
+                    params.deleteCharAt(params.length() - 1);
+                    String result = doPost(urlStr, params.toString());
+                    if (callBack != null) {
+                        callBack.onRequestComplete(result);
+                    }
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            };
+        }.start();
+    }
     /**
      * Get请求，获得返回数据
      *

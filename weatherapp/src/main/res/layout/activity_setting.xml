@@ -7,6 +7,7 @@
     <android.support.v7.widget.Toolbar
         android:id="@+id/setting_toolbar"
         android:background="@color/background"
+        android:elevation="@dimen/toolbar_z"
         android:layout_width="match_parent"
         android:layout_height="?attr/actionBarSize">
 
@@ -52,6 +53,7 @@
 
         <com.rey.material.widget.Button
             android:layout_marginTop="@dimen/padding"
+            android:elevation="@dimen/button_resting_z"
             android:id="@+id/button"
             android:text="@string/setting_ok"
             android:textSize="@dimen/big_text_size"

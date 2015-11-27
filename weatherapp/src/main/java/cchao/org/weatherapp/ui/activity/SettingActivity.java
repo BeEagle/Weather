@@ -1,11 +1,8 @@
-package cchao.org.weatherapp.activity;
+package cchao.org.weatherapp.ui.activity;
 
-import android.content.Intent;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Color;
-import android.os.Bundle;
-import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.KeyEvent;
 import android.view.View;
@@ -17,16 +14,16 @@ import com.rey.material.widget.Spinner;
 import java.util.ArrayList;
 import java.util.List;
 
+import cchao.org.weatherapp.Constant;
 import cchao.org.weatherapp.R;
-import cchao.org.weatherapp.utils.Cache;
-import cchao.org.weatherapp.utils.CityCodeDB;
-import cchao.org.weatherapp.utils.Constant;
+import cchao.org.weatherapp.controller.CityCodeDbController;
+import cchao.org.weatherapp.ui.base.BaseActivity;
 
 /**
  * 设置地点
  * Created by chenchao on 15/11/13.
  */
-public class SettingActivity extends AppCompatActivity{
+public class SettingActivity extends BaseActivity {
 
     private Toolbar mToolbar;
 
@@ -38,7 +35,7 @@ public class SettingActivity extends AppCompatActivity{
 
     private Button button;
 
-    private CityCodeDB cityCodeDB;
+    private CityCodeDbController cityCodeDB;
     private SQLiteDatabase db = null;
 
     //省市区列表
@@ -52,22 +49,24 @@ public class SettingActivity extends AppCompatActivity{
     //选中城市
     private String citycode_name = null;
 
-    //缓存数据
-    private Cache cache;
-
     private int clickItemNum;
 
     @Override
-    protected void onCreate(Bundle saveBundle) {
-        super.onCreate(saveBundle);
-        setContentView(R.layout.activity_setting);
+    protected int getContentView() {
+        return R.layout.activity_setting;
+    }
 
+    @Override
+    protected void bindView() {
         mToolbar = (Toolbar) findViewById(R.id.setting_toolbar);
         provinceSpinner = (Spinner) findViewById(R.id.setting_spinner_province);
         citySpinner = (Spinner) findViewById(R.id.setting_spinner_city);
         countrySpinner = (Spinner) findViewById(R.id.setting_spinner_county);
         button = (Button) findViewById(R.id.button);
+    }
 
+    @Override
+    protected void initData() {
         mToolbar.setTitle("Setting");
         mToolbar.setTitleTextColor(Color.WHITE);
         setSupportActionBar(mToolbar);
@@ -78,28 +77,27 @@ public class SettingActivity extends AppCompatActivity{
                 finish();
             }
         });
+        initSpinner();
+    }
 
+    @Override
+    protected void bindEvent() {
         button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 citycode_name = areaname.get(clickItemNum).toString();
                 citycode = cityCodeDB.getCityCode(db, areaid.get(clickItemNum)
                         .toString());
-                cache.save(Constant.CITY_ID, citycode);
-                cache.save(Constant.CITY_NAME, citycode_name);
+                weatherMsg.save(Constant.CITY_ID, citycode);
+                weatherMsg.save(Constant.CITY_NAME, citycode_name);
                 setResult(100);
                 finish();
             }
         });
-
-        init();
     }
 
-    private void init(){
-
-        cache = new Cache(SettingActivity.this);
-
-        cityCodeDB = new CityCodeDB(SettingActivity.this);
+    private void initSpinner(){
+        cityCodeDB = new CityCodeDbController(SettingActivity.this);
         db = cityCodeDB.getDatabase("city.db");
 
         provinceid = new ArrayList<>();
@@ -112,7 +110,7 @@ public class SettingActivity extends AppCompatActivity{
         clickItemNum = 0;
 
         //初始化城市选择Spinner
-        String tempCode = cityCodeDB.getCityId(db, cache.get(Constant.CITY_ID));
+        String tempCode = cityCodeDB.getCityId(db, weatherMsg.get(Constant.CITY_ID));
         if (tempCode != "" && tempCode != null) {
             initProvinceSpinner(db, tempCode.substring(0, 2));
             initCitySpinner(db, tempCode.substring(0, 2), tempCode.substring(2, 4));
@@ -232,11 +230,6 @@ public class SettingActivity extends AppCompatActivity{
                 clickItemNum = position;
             }
         });
-    }
-
-    @Override
-    protected void onPause(){
-        super.onPause();
     }
 
     @Override

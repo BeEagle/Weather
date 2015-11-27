@@ -1,1 +1,1 @@
-include ':weatherapp', ':coverflow'
+include ':weatherapp'

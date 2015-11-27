@@ -1,4 +1,4 @@
-package cchao.org.weatherapp.utils;
+package cchao.org.weatherapp.controller;
 
 import android.content.Context;
 import android.database.Cursor;
@@ -7,9 +7,9 @@ import android.database.sqlite.SQLiteDatabase;
 import cchao.org.weatherapp.manager.AssetsDatabaseManager;
 
 /**
- * Created by chenchao on 15/11/16.
+ * Created by chenchao on 15/11/27.
  */
-public class CityCodeDB {
+public class CityCodeDbController {
     public static final String TABLE_PROVINCE = "province";
     public static final String TABLE_CITY = "city";
     public static final String TABLE_AREA = "area";
@@ -17,7 +17,7 @@ public class CityCodeDB {
 
     private Context context;
 
-    public CityCodeDB(Context context) {
+    public CityCodeDbController(Context context) {
         this.context = context;
     }
 

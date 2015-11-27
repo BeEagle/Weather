@@ -1,112 +1,98 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/now_linear"
     android:background="@color/background"
+    android:layout_alignParentBottom="true"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
     <android.support.v7.widget.Toolbar
         android:id="@+id/main_toolbar"
+        android:layout_alignParentTop="true"
         android:layout_width="match_parent"
         android:layout_height="?attr/actionBarSize">
 
     </android.support.v7.widget.Toolbar>
 
-    <RelativeLayout
-        android:id="@+id/now_linear"
+    <TextView
+        android:id="@+id/textview_now_tmp"
         android:layout_below="@+id/main_toolbar"
-        android:layout_alignParentBottom="true"
+        android:layout_marginLeft="@dimen/margin"
+        android:text="20°"
+        android:textColor="@color/general_white"
+        android:textSize="120sp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" />
+
+    <ImageView
+        android:layout_below="@+id/main_toolbar"
+        android:id="@+id/imageview_now_cond"
+        android:layout_toRightOf="@+id/textview_now_tmp"
+        android:layout_marginLeft="@dimen/margin"
+        android:layout_marginTop="@dimen/margin"
+        android:src="@drawable/w100"
+        android:layout_width="@dimen/setting_weather_icon_width"
+        android:layout_height="@dimen/setting_weather_icon_height" />
+
+    <TextView
+        android:id="@+id/textview_now_cond"
+        android:layout_below="@id/imageview_now_cond"
+        android:layout_toRightOf="@+id/textview_now_tmp"
+        android:layout_marginLeft="36dp"
+        android:text="小雨"
+        android:textColor="@color/general_white"
+        android:textSize="@dimen/big_big_text_size"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" />
+
+    <RelativeLayout
+        android:id="@+id/relativelayout"
+        android:layout_below="@+id/textview_now_tmp"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="wrap_content">
 
         <TextView
-            android:id="@+id/textview_now_tmp"
+            android:id="@+id/textview_dir"
+            android:text="南风"
             android:layout_marginLeft="@dimen/margin"
-            android:text="20°"
+            android:layout_marginTop="@dimen/margin"
+            android:textSize="@dimen/big_big_text_size"
             android:textColor="@color/general_white"
-            android:textSize="120sp"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content" />
-
-        <ImageView
-            android:id="@+id/imageview_now_cond"
-            android:layout_toRightOf="@+id/textview_now_tmp"
-            android:layout_marginLeft="16dp"
-            android:layout_marginTop="16dp"
-            android:src="@drawable/w100"
-            android:layout_width="80dp"
-            android:layout_height="80dp" />
 
         <TextView
-            android:id="@+id/textview_now_cond"
-            android:layout_below="@id/imageview_now_cond"
-            android:layout_toRightOf="@+id/textview_now_tmp"
-            android:layout_marginLeft="36dp"
-            android:text="小雨"
+            android:id="@+id/textview_sc"
+            android:text="2-3"
+            android:layout_toRightOf="@id/textview_dir"
+            android:layout_marginLeft="@dimen/margin"
+            android:layout_marginTop="@dimen/margin"
+            android:textSize="@dimen/big_big_text_size"
             android:textColor="@color/general_white"
-            android:textSize="20sp"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content" />
 
-        <RelativeLayout
-            android:id="@+id/relativelayout"
-            android:layout_below="@+id/textview_now_tmp"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content">
-
-            <TextView
-                android:id="@+id/textview_dir"
-                android:text="南风"
-                android:layout_marginLeft="16dp"
-                android:layout_marginTop="16dp"
-                android:textSize="20sp"
-                android:textColor="@color/general_white"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content" />
-
-            <TextView
-                android:id="@+id/textview_sc"
-                android:text="2-3"
-                android:layout_toRightOf="@id/textview_dir"
-                android:layout_marginLeft="16dp"
-                android:layout_marginTop="16dp"
-                android:textSize="20sp"
-                android:textColor="@color/general_white"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content" />
-
-            <TextView
-                android:id="@+id/textview_suggestion_txt"
-                android:layout_marginLeft="16dp"
-                android:layout_marginTop="16dp"
-                android:layout_below="@id/textview_dir"
-                android:textSize="20sp"
-                android:textColor="@color/general_white"
-                android:text="建议着长袖T恤、衬衫加单裤等服装。年老体弱者宜着针织长袖衬衫、马甲和长裤。"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content" />
-
-        </RelativeLayout>
+        <TextView
+            android:id="@+id/textview_suggestion_txt"
+            android:layout_marginLeft="@dimen/margin"
+            android:layout_marginTop="@dimen/margin"
+            android:layout_below="@id/textview_dir"
+            android:textSize="@dimen/big_big_text_size"
+            android:textColor="@color/general_white"
+            android:text="建议着长袖T恤、衬衫加单裤等服装。年老体弱者宜着针织长袖衬衫、马甲和长裤。"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
 
     </RelativeLayout>
 
-    <!--<android.support.design.widget.FloatingActionButton-->
-        <!--android:id="@+id/fab"-->
-        <!--android:layout_marginRight="@dimen/margin"-->
-        <!--android:layout_marginBottom="@dimen/float_bottom"-->
-        <!--android:src="@drawable/ic_autorenew_white_48dp"-->
-        <!--android:layout_alignParentBottom="true"-->
-        <!--android:layout_alignParentRight="true"-->
-        <!--android:layout_width="wrap_content"-->
-        <!--android:layout_height="wrap_content">-->
+    <RelativeLayout
+        android:layout_below="@+id/relativelayout"
+        android:layout_marginTop="@dimen/padding"
+        android:background="@color/general_white"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
 
-    <!--</android.support.design.widget.FloatingActionButton>-->
-
-    <!--<FrameLayout-->
-        <!--android:id="@+id/framelayout"-->
-        <!--android:layout_marginBottom="16dp"-->
-        <!--android:layout_alignParentBottom="true"-->
-        <!--android:layout_width="match_parent"-->
-        <!--android:layout_height="112dp" />-->
+    </RelativeLayout>
 
 </RelativeLayout>
