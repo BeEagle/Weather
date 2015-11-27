@@ -3,6 +3,8 @@ package cchao.org.weatherapp.ui.base;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 
+import com.rey.material.app.Dialog;
+
 import cchao.org.weatherapp.Constant;
 import cchao.org.weatherapp.WeatherApplication;
 import cchao.org.weatherapp.utils.SharedPreferencesUtil;

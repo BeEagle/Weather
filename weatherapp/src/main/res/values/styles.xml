@@ -12,6 +12,12 @@
         <item name="android:textColor">@color/general_white</item>
     </style>
 
+    <!-- Dialog style-->
+    <style name="SimpleDialogLight" parent="Material.App.Dialog.Simple.Light">
+        <item name="di_inAnimation">@anim/anim_scale_in</item>
+        <item name="di_outAnimation">@anim/anim_scale_out</item>
+    </style>
+
     <!-- Spinner style-->
     <style name="LightSpinner" parent="Material.Widget.Spinner.Light">
         <item name="rd_style">@style/Material.Drawable.Ripple.Wave.Light</item>

@@ -4,6 +4,8 @@ import android.app.ProgressDialog;
 import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.drawable.Drawable;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.Menu;
@@ -14,6 +16,7 @@ import android.widget.Toast;
 
 import com.squareup.otto.Subscribe;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -22,6 +25,7 @@ import cchao.org.weatherapp.R;
 import cchao.org.weatherapp.api.Api;
 import cchao.org.weatherapp.controller.SaveDataController;
 import cchao.org.weatherapp.event.UpdateEvent;
+import cchao.org.weatherapp.ui.adapter.DailyRecyclerAdapter;
 import cchao.org.weatherapp.ui.base.BaseActivity;
 import cchao.org.weatherapp.utils.BusUtil;
 import cchao.org.weatherapp.utils.HttpUtil;
@@ -46,6 +50,11 @@ public class MainActivity extends BaseActivity {
     private TextView mSuggestionTxt;
     private ProgressDialog mProgressDialog;
 
+    private RecyclerView mRecyclerDaily;
+    private LinearLayoutManager mLinearLayoutManager;
+    private DailyRecyclerAdapter mDailyRecyclerAdapter;
+    private ArrayList<String> mDataTime, mDataTmp, mDataCondText, mDataCondImage;
+
     @Override
     protected int getContentView() {
         return R.layout.activity_main;
@@ -60,6 +69,7 @@ public class MainActivity extends BaseActivity {
         mWindDir = (TextView) findViewById(R.id.textview_dir);
         mWindSc = (TextView) findViewById(R.id.textview_sc);
         mSuggestionTxt = (TextView) findViewById(R.id.textview_suggestion_txt);
+        mRecyclerDaily = (RecyclerView) findViewById(R.id.recycler_daily);
     }
 
     @Override
@@ -69,6 +79,7 @@ public class MainActivity extends BaseActivity {
         setSupportActionBar(mToolbar);
         mProgressDialog = ProgressDialog.show(this, "请稍等", "刷新中...");
         updateWeather();
+        initRecycler();
     }
 
     @Override
@@ -79,7 +90,50 @@ public class MainActivity extends BaseActivity {
     public void subscribeUpdate(UpdateEvent event) {
         if (event.getMsg().equals(Constant.UPDATE_MSG)) {
             updateWeather();
+            updateRecyclerData();
+            mDailyRecyclerAdapter.notifyDataSetChanged();
         }
+    }
+
+    /**
+     * 初始化RecyclerView
+     */
+    private void initRecycler() {
+        mLinearLayoutManager = new LinearLayoutManager(this);
+        mLinearLayoutManager.setOrientation(LinearLayoutManager.HORIZONTAL);
+        mRecyclerDaily.setLayoutManager(mLinearLayoutManager);
+
+        mDailyRecyclerAdapter = new DailyRecyclerAdapter();
+
+        mDataTime = new ArrayList<String>();
+        mDataTmp = new ArrayList<String>();
+        mDataCondText = new ArrayList<String>();
+        mDataCondImage = new ArrayList<String>();
+        updateRecyclerData();
+        mRecyclerDaily.setAdapter(mDailyRecyclerAdapter);
+    }
+
+    /**
+     * 更新recyclerview数据
+     */
+    private void updateRecyclerData() {
+        if (!mDataTime.isEmpty()) {
+            mDataTime.clear();
+            mDataCondText.clear();
+            mDataCondImage.clear();
+            mDataTmp.clear();
+        }
+        for (int i = 2; i < 8; i++) {
+            String temp = String.valueOf(i);
+            mDataTime.add((mWeatherMsg.get(Constant.DAILY_TIME + temp)).substring(5));
+            mDataTmp.add(mWeatherMsg.get(Constant.DAILY_TMP_MIN + temp) + "°~" + mWeatherMsg.get(Constant.DAILY_TMP_MAX + temp) + "°");
+            mDataCondText.add(mWeatherMsg.get(Constant.DAILY_COND_d + temp));
+            mDataCondImage.add(mWeatherMsg.get(Constant.DAILY_CODE_d + temp));
+        }
+        mDailyRecyclerAdapter.setmDataCondImage(mDataCondImage);
+        mDailyRecyclerAdapter.setmDataCondText(mDataCondText);
+        mDailyRecyclerAdapter.setmDataTime(mDataTime);
+        mDailyRecyclerAdapter.setmDataTmp(mDataTmp);
     }
 
     /**

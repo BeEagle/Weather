@@ -8,6 +8,9 @@ import android.view.KeyEvent;
 import android.view.View;
 import android.widget.ArrayAdapter;
 
+import com.rey.material.app.Dialog;
+import com.rey.material.app.DialogFragment;
+import com.rey.material.app.SimpleDialog;
 import com.rey.material.widget.Button;
 import com.rey.material.widget.Spinner;
 
@@ -67,7 +70,7 @@ public class SettingActivity extends BaseActivity {
 
     @Override
     protected void initData() {
-        mToolbar.setTitle("Setting");
+        mToolbar.setTitle(R.string.setting);
         mToolbar.setTitleTextColor(Color.WHITE);
         setSupportActionBar(mToolbar);
         mToolbar.setNavigationIcon(R.drawable.ic_home_white_36dp);
@@ -85,13 +88,31 @@ public class SettingActivity extends BaseActivity {
         mOkButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                mCityCodeName = mAreaName.get(mClickItemNum).toString();
-                mCityCode = mCityCodeDB.getCityCode(db, mAreaId.get(mClickItemNum)
-                        .toString());
-                mWeatherMsg.save(Constant.CITY_ID, mCityCode);
-                mWeatherMsg.save(Constant.CITY_NAME, mCityCodeName);
-                setResult(UPDATE_ACTIVITY_RESULT);
-                finish();
+                Dialog.Builder builder = null;
+                builder = new SimpleDialog.Builder(R.style.SimpleDialogLight){
+                    @Override
+                    public void onPositiveActionClicked(DialogFragment fragment) {
+                        mCityCodeName = mAreaName.get(mClickItemNum).toString();
+                        mCityCode = mCityCodeDB.getCityCode(db, mAreaId.get(mClickItemNum)
+                                .toString());
+                        mWeatherMsg.save(Constant.CITY_ID, mCityCode);
+                        mWeatherMsg.save(Constant.CITY_NAME, mCityCodeName);
+                        setResult(UPDATE_ACTIVITY_RESULT);
+                        finish();
+                        super.onPositiveActionClicked(fragment);
+                    }
+
+                    @Override
+                    public void onNegativeActionClicked(DialogFragment fragment) {
+                        super.onNegativeActionClicked(fragment);
+                    }
+                };
+
+                builder.title("确定选择该地区吗?")
+                        .positiveAction("Ok")
+                        .negativeAction("Cancel");
+                DialogFragment fragment = DialogFragment.newInstance(builder);
+                fragment.show(getSupportFragmentManager(), null);
             }
         });
     }

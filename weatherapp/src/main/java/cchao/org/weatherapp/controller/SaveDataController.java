@@ -4,10 +4,10 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import cchao.org.weatherapp.BuildBusConfig;
 import cchao.org.weatherapp.Constant;
 import cchao.org.weatherapp.WeatherApplication;
 import cchao.org.weatherapp.event.UpdateEvent;
+import cchao.org.weatherapp.utils.BusUtil;
 import cchao.org.weatherapp.utils.SharedPreferencesUtil;
 
 /**
@@ -64,7 +64,7 @@ public class SaveDataController {
                 }
 
                 weatherMsg.save(Constant.SUGGESTION_DRSG, suggestion_obj.getJSONObject("drsg").getString("txt"));
-                BuildBusConfig.getBus().post(new UpdateEvent(Constant.UPDATE_MSG));
+                BusUtil.getBus().post(new UpdateEvent(Constant.UPDATE_MSG));
             }
         } catch (JSONException e) {
             e.printStackTrace();
