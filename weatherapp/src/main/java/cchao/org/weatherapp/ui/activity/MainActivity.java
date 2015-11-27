@@ -31,21 +31,20 @@ import cchao.org.weatherapp.utils.HttpUtil;
  */
 public class MainActivity extends BaseActivity {
 
-    private static final int UPDATE_ACTIVITY_RESULT = 100;
     private Toolbar mToolbar;
     //现在温度
-    private TextView nowTmp;
+    private TextView mNowTmp;
     //现在天气状况
-    private TextView nowCond;
+    private TextView mNowCond;
     //现在天气状况图片
-    private ImageView nowCondImage;
+    private ImageView mNowCondImage;
     //风向
-    private TextView windDir;
+    private TextView mWindDir;
     //风力
-    private TextView windSc;
+    private TextView mWindSc;
     //穿衣提示
-    private TextView suggestionTxt;
-    private ProgressDialog progressDialog;
+    private TextView mSuggestionTxt;
+    private ProgressDialog mProgressDialog;
 
     @Override
     protected int getContentView() {
@@ -55,12 +54,12 @@ public class MainActivity extends BaseActivity {
     @Override
     protected void bindView() {
         mToolbar = (Toolbar) findViewById(R.id.main_toolbar);
-        nowTmp = (TextView) findViewById(R.id.textview_now_tmp);
-        nowCond = (TextView) findViewById(R.id.textview_now_cond);
-        nowCondImage = (ImageView) findViewById(R.id.imageview_now_cond);
-        windDir = (TextView) findViewById(R.id.textview_dir);
-        windSc = (TextView) findViewById(R.id.textview_sc);
-        suggestionTxt = (TextView) findViewById(R.id.textview_suggestion_txt);
+        mNowTmp = (TextView) findViewById(R.id.textview_now_tmp);
+        mNowCond = (TextView) findViewById(R.id.textview_now_cond);
+        mNowCondImage = (ImageView) findViewById(R.id.imageview_now_cond);
+        mWindDir = (TextView) findViewById(R.id.textview_dir);
+        mWindSc = (TextView) findViewById(R.id.textview_sc);
+        mSuggestionTxt = (TextView) findViewById(R.id.textview_suggestion_txt);
     }
 
     @Override
@@ -68,7 +67,7 @@ public class MainActivity extends BaseActivity {
         BusUtil.getBus().register(this);
         mToolbar.setTitleTextColor(Color.WHITE);
         setSupportActionBar(mToolbar);
-        progressDialog = ProgressDialog.show(this, "请稍等", "刷新中...");
+        mProgressDialog = ProgressDialog.show(this, "请稍等", "刷新中...");
         updateWeather();
     }
 
@@ -88,18 +87,18 @@ public class MainActivity extends BaseActivity {
      */
     private void updateWeather() {
         if (!cityIsEmpty()) {
-            getSupportActionBar().setTitle(weatherMsg.get(Constant.CITY_NAME));
-            nowTmp.setText(weatherMsg.get(Constant.NOW_TMP) + "°");
-            nowCond.setText(weatherMsg.get(Constant.NOW_COND));
-            nowCondImage.setImageDrawable(getImage(weatherMsg.get(Constant.NOW_CODE)));
-            windDir.setText(weatherMsg.get(Constant.NOW_WIND_DIR));
-            windSc.setText(weatherMsg.get(Constant.NOW_WIND_SC));
-            suggestionTxt.setText(weatherMsg.get(Constant.SUGGESTION_DRSG));
+            getSupportActionBar().setTitle(mWeatherMsg.get(Constant.CITY_NAME));
+            mNowTmp.setText(mWeatherMsg.get(Constant.NOW_TMP) + "°");
+            mNowCond.setText(mWeatherMsg.get(Constant.NOW_COND));
+            mNowCondImage.setImageDrawable(getImage(mWeatherMsg.get(Constant.NOW_CODE)));
+            mWindDir.setText(mWeatherMsg.get(Constant.NOW_WIND_DIR));
+            mWindSc.setText(mWeatherMsg.get(Constant.NOW_WIND_SC));
+            mSuggestionTxt.setText(mWeatherMsg.get(Constant.SUGGESTION_DRSG));
         } else {
             getSupportActionBar().setTitle("Weather");
         }
-        if(progressDialog.isShowing()) {
-            progressDialog.dismiss();
+        if(mProgressDialog.isShowing()) {
+            mProgressDialog.dismiss();
         }
     }
 
@@ -107,9 +106,9 @@ public class MainActivity extends BaseActivity {
      * 从服务器获取天气信息
      */
     private void getWeather() {
-        progressDialog.show();
+        mProgressDialog.show();
         Map<String, String> param = new HashMap<String, String>();
-        param.put("cityid", "CN" + weatherMsg.get(Constant.CITY_ID));
+        param.put("cityid", "CN" + mWeatherMsg.get(Constant.CITY_ID));
         param.put("key", Constant.KEY);
         try{
             HttpUtil.doPostAsyn(Api.getWeatherUri()

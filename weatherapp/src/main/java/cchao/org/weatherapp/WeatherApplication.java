@@ -1,7 +1,6 @@
 package cchao.org.weatherapp;
 
 import android.app.Application;
-
 import cchao.org.weatherapp.utils.SharedPreferencesUtil;
 
 /**

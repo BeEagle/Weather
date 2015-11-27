@@ -12,14 +12,19 @@ import cchao.org.weatherapp.utils.SharedPreferencesUtil;
  */
 public abstract class BaseActivity extends AppCompatActivity{
 
-    public SharedPreferencesUtil weatherMsg;
+    //设置界面跳转回主界面setResult值
+    public static final int UPDATE_ACTIVITY_RESULT = 100;
+    //存储城市代码的数据库
+    public static final String DB_NAME = "city.db";
+
+    public SharedPreferencesUtil mWeatherMsg;
 
     @Override
     protected void onCreate(Bundle saveBundle) {
         super.onCreate(saveBundle);
         setContentView(getContentView());
 
-        weatherMsg = WeatherApplication.getInstance().getWeatherMsg();
+        mWeatherMsg = WeatherApplication.getInstance().getWeatherMsg();
 
         bindView();
         initData();
@@ -31,7 +36,7 @@ public abstract class BaseActivity extends AppCompatActivity{
      * @return
      */
     public boolean cityIsEmpty() {
-        if (weatherMsg.get(Constant.CITY_ID).equals(""))
+        if (mWeatherMsg.get(Constant.CITY_ID).equals(""))
             return true;
         return false;
     }

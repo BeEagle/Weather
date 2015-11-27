@@ -27,29 +27,29 @@ public class SettingActivity extends BaseActivity {
 
     private Toolbar mToolbar;
 
-    private Spinner provinceSpinner;
+    private Spinner mProvinceSpinner;
 
-    private Spinner citySpinner;
+    private Spinner mCitySpinner;
 
-    private Spinner countrySpinner;
+    private Spinner mCountrySpinner;
 
-    private Button button;
+    private Button mOkButton;
 
-    private CityCodeDbController cityCodeDB;
+    private CityCodeDbController mCityCodeDB;
     private SQLiteDatabase db = null;
 
     //省市区列表
-    private List<String> provinceid, provincename;
-    private List<String> cityid, cityname;
-    private List<String> areaid, areaname;
+    private List<String> mProvinceId, mProvinceName;
+    private List<String> mCityId, mCityName;
+    private List<String> mAreaId, mAreaName;
 
     //选中城市id
-    private String citycode = null;
+    private String mCityCode = null;
 
     //选中城市
-    private String citycode_name = null;
+    private String mCityCodeName = null;
 
-    private int clickItemNum;
+    private int mClickItemNum;
 
     @Override
     protected int getContentView() {
@@ -59,10 +59,10 @@ public class SettingActivity extends BaseActivity {
     @Override
     protected void bindView() {
         mToolbar = (Toolbar) findViewById(R.id.setting_toolbar);
-        provinceSpinner = (Spinner) findViewById(R.id.setting_spinner_province);
-        citySpinner = (Spinner) findViewById(R.id.setting_spinner_city);
-        countrySpinner = (Spinner) findViewById(R.id.setting_spinner_county);
-        button = (Button) findViewById(R.id.button);
+        mProvinceSpinner = (Spinner) findViewById(R.id.setting_spinner_province);
+        mCitySpinner = (Spinner) findViewById(R.id.setting_spinner_city);
+        mCountrySpinner = (Spinner) findViewById(R.id.setting_spinner_county);
+        mOkButton = (Button) findViewById(R.id.button);
     }
 
     @Override
@@ -82,35 +82,35 @@ public class SettingActivity extends BaseActivity {
 
     @Override
     protected void bindEvent() {
-        button.setOnClickListener(new View.OnClickListener() {
+        mOkButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                citycode_name = areaname.get(clickItemNum).toString();
-                citycode = cityCodeDB.getCityCode(db, areaid.get(clickItemNum)
+                mCityCodeName = mAreaName.get(mClickItemNum).toString();
+                mCityCode = mCityCodeDB.getCityCode(db, mAreaId.get(mClickItemNum)
                         .toString());
-                weatherMsg.save(Constant.CITY_ID, citycode);
-                weatherMsg.save(Constant.CITY_NAME, citycode_name);
-                setResult(100);
+                mWeatherMsg.save(Constant.CITY_ID, mCityCode);
+                mWeatherMsg.save(Constant.CITY_NAME, mCityCodeName);
+                setResult(UPDATE_ACTIVITY_RESULT);
                 finish();
             }
         });
     }
 
     private void initSpinner(){
-        cityCodeDB = new CityCodeDbController(SettingActivity.this);
-        db = cityCodeDB.getDatabase("city.db");
+        mCityCodeDB = new CityCodeDbController(SettingActivity.this);
+        db = mCityCodeDB.getDatabase(DB_NAME);
 
-        provinceid = new ArrayList<>();
-        provincename = new ArrayList<>();
-        cityid = new ArrayList<>();
-        cityname = new ArrayList<>();
-        areaid = new ArrayList<>();
-        areaname = new ArrayList<>();
+        mProvinceId = new ArrayList<>();
+        mProvinceName = new ArrayList<>();
+        mCityId = new ArrayList<>();
+        mCityName = new ArrayList<>();
+        mAreaId = new ArrayList<>();
+        mAreaName = new ArrayList<>();
 
-        clickItemNum = 0;
+        mClickItemNum = 0;
 
         //初始化城市选择Spinner
-        String tempCode = cityCodeDB.getCityId(db, weatherMsg.get(Constant.CITY_ID));
+        String tempCode = mCityCodeDB.getCityId(db, mWeatherMsg.get(Constant.CITY_ID));
         if (tempCode != "" && tempCode != null) {
             initProvinceSpinner(db, tempCode.substring(0, 2));
             initCitySpinner(db, tempCode.substring(0, 2), tempCode.substring(2, 4));
@@ -128,32 +128,32 @@ public class SettingActivity extends BaseActivity {
      * @param initProvinceId    初始化的省id
      */
     private void initProvinceSpinner(SQLiteDatabase database, String initProvinceId) {
-        Cursor provincecursor = cityCodeDB.getAllProvince(database);
+        Cursor provincecursor = mCityCodeDB.getAllProvince(database);
 
         if (provincecursor != null) {
-            provinceid.clear();
-            provincename.clear();
+            mProvinceId.clear();
+            mProvinceName.clear();
             if (provincecursor.moveToFirst()) {
                 do {
                     String province_id = provincecursor
                             .getString(provincecursor.getColumnIndex("id"));
                     String province_name = provincecursor
                             .getString(provincecursor.getColumnIndex("name"));
-                    provinceid.add(province_id);
-                    provincename.add(province_name);
+                    mProvinceId.add(province_id);
+                    mProvinceName.add(province_name);
                 } while (provincecursor.moveToNext());
             }
         }
 
-        ArrayAdapter<String> adapter = new ArrayAdapter<>(this, R.layout.row_spn, provincename);
+        ArrayAdapter<String> adapter = new ArrayAdapter<>(this, R.layout.row_spn, mProvinceName);
         adapter.setDropDownViewResource(R.layout.row_spn_dropdown);
-        provinceSpinner.setAdapter(adapter);
-        provinceSpinner.setSelection(Integer.valueOf(initProvinceId) - 1);
-        provinceSpinner.setOnItemSelectedListener(new Spinner.OnItemSelectedListener() {
+        mProvinceSpinner.setAdapter(adapter);
+        mProvinceSpinner.setSelection(Integer.valueOf(initProvinceId) - 1);
+        mProvinceSpinner.setOnItemSelectedListener(new Spinner.OnItemSelectedListener() {
             @Override
             public void onItemSelected(Spinner parent, View view, int position, long id) {
-                initCitySpinner(db, provinceid.get(position).toString(), "01");
-                initAreaSpinner(db, provinceid.get(position).toString() + "01", "01");
+                initCitySpinner(db, mProvinceId.get(position).toString(), "01");
+                initAreaSpinner(db, mProvinceId.get(position).toString() + "01", "01");
             }
         });
     }
@@ -161,14 +161,14 @@ public class SettingActivity extends BaseActivity {
     /**
      * 初始化市Spinner
      * @param database  数据库
-     * @param provinceid    选择的省id
+     * @param mProvinceId    选择的省id
      * @param initCityId    初始化的市id
      */
-    private void initCitySpinner(SQLiteDatabase database, String provinceid, String initCityId) {
-        Cursor citycursor = cityCodeDB.getCity(database, provinceid);
+    private void initCitySpinner(SQLiteDatabase database, String mProvinceId, String initCityId) {
+        Cursor citycursor = mCityCodeDB.getCity(database, mProvinceId);
         if (citycursor != null) {
-            cityid.clear();
-            cityname.clear();
+            mCityId.clear();
+            mCityName.clear();
             if (citycursor.moveToFirst()) {
                 do {
                     String city_id = citycursor.getString(citycursor
@@ -177,20 +177,20 @@ public class SettingActivity extends BaseActivity {
                             .getColumnIndex("name"));
                     String province = citycursor.getString(citycursor
                             .getColumnIndex("p_id"));
-                    cityid.add(city_id);
-                    cityname.add(city_name);
+                    mCityId.add(city_id);
+                    mCityName.add(city_name);
                 } while (citycursor.moveToNext());
             }
         }
 
-        ArrayAdapter<String> adapter = new ArrayAdapter<>(this, R.layout.row_spn, cityname);
+        ArrayAdapter<String> adapter = new ArrayAdapter<>(this, R.layout.row_spn, mCityName);
         adapter.setDropDownViewResource(R.layout.row_spn_dropdown);
-        citySpinner.setAdapter(adapter);
-        citySpinner.setSelection(Integer.valueOf(initCityId) - 1);
-        citySpinner.setOnItemSelectedListener(new Spinner.OnItemSelectedListener() {
+        mCitySpinner.setAdapter(adapter);
+        mCitySpinner.setSelection(Integer.valueOf(initCityId) - 1);
+        mCitySpinner.setOnItemSelectedListener(new Spinner.OnItemSelectedListener() {
             @Override
             public void onItemSelected(Spinner parent, View view, int position, long id) {
-                initAreaSpinner(db, cityid.get(position).toString(), "01");
+                initAreaSpinner(db, mCityId.get(position).toString(), "01");
             }
         });
     }
@@ -198,14 +198,14 @@ public class SettingActivity extends BaseActivity {
     /**
      * 初始化地区Spinner,同时获取城市码
      * @param database  数据库
-     * @param cityid    选择的市id
+     * @param mCityId    选择的市id
      * @param initAreaId    初始化的地区id
      */
-    private void initAreaSpinner(SQLiteDatabase database, String cityid, String initAreaId) {
-        Cursor areacursor = cityCodeDB.getArea(database, cityid);
+    private void initAreaSpinner(SQLiteDatabase database, String mCityId, String initAreaId) {
+        Cursor areacursor = mCityCodeDB.getArea(database, mCityId);
         if (areacursor != null) {
-            areaid.clear();
-            areaname.clear();
+            mAreaId.clear();
+            mAreaName.clear();
             if (areacursor.moveToFirst()) {
                 do {
                     String area_id = areacursor.getString(areacursor
@@ -214,20 +214,20 @@ public class SettingActivity extends BaseActivity {
                             .getColumnIndex("name"));
                     String city = areacursor.getString(areacursor
                             .getColumnIndex("c_id"));
-                    areaid.add(area_id);
-                    areaname.add(area_name);
+                    mAreaId.add(area_id);
+                    mAreaName.add(area_name);
                 } while (areacursor.moveToNext());
             }
         }
 
-        ArrayAdapter<String> adapter = new ArrayAdapter<>(this, R.layout.row_spn, areaname);
+        ArrayAdapter<String> adapter = new ArrayAdapter<>(this, R.layout.row_spn, mAreaName);
         adapter.setDropDownViewResource(R.layout.row_spn_dropdown);
-        countrySpinner.setAdapter(adapter);
-        countrySpinner.setSelection(Integer.valueOf(initAreaId) - 1);
-        countrySpinner.setOnItemSelectedListener(new Spinner.OnItemSelectedListener() {
+        mCountrySpinner.setAdapter(adapter);
+        mCountrySpinner.setSelection(Integer.valueOf(initAreaId) - 1);
+        mCountrySpinner.setOnItemSelectedListener(new Spinner.OnItemSelectedListener() {
             @Override
             public void onItemSelected(Spinner parent, View view, int position, long id) {
-                clickItemNum = position;
+                mClickItemNum = position;
             }
         });
     }
