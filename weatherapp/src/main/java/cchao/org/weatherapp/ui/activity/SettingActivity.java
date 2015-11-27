@@ -107,8 +107,7 @@ public class SettingActivity extends BaseActivity {
                         super.onNegativeActionClicked(fragment);
                     }
                 };
-
-                builder.title("确定选择该地区吗?")
+                builder.title("确定显示地区为" + mCountrySpinner.getSelectedItem().toString()+ "吗?")
                         .positiveAction("Ok")
                         .negativeAction("Cancel");
                 DialogFragment fragment = DialogFragment.newInstance(builder);

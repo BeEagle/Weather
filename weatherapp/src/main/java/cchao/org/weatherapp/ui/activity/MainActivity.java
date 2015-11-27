@@ -1,5 +1,6 @@
 package cchao.org.weatherapp.ui.activity;
 
+import android.animation.ObjectAnimator;
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.graphics.Color;
@@ -10,6 +11,9 @@ import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -34,6 +38,9 @@ import cchao.org.weatherapp.utils.HttpUtil;
  * Created by chenchao on 15/11/13.
  */
 public class MainActivity extends BaseActivity {
+
+    //refresh动画
+    private Animation mAnimation;
 
     private Toolbar mToolbar;
     //现在温度
@@ -78,12 +85,37 @@ public class MainActivity extends BaseActivity {
         mToolbar.setTitleTextColor(Color.WHITE);
         setSupportActionBar(mToolbar);
         mProgressDialog = ProgressDialog.show(this, "请稍等", "刷新中...");
+        mAnimation = AnimationUtils.loadAnimation(MainActivity.this, R.anim.anim_menuitem_refresh);
+        mAnimation.setRepeatCount(Animation.INFINITE);
         updateWeather();
         initRecycler();
     }
 
     @Override
-    protected void bindEvent() {}
+    protected void bindEvent() {
+        mToolbar.addOnLayoutChangeListener(new View.OnLayoutChangeListener() {
+            @Override
+            public void onLayoutChange(View v, int left, int top, int right, int bottom,
+                                       int oldLeft, int oldTop, int oldRight, int oldBottom) {
+                final View item = mToolbar.findViewById(R.id.menu_main_refresh);
+                if (item != null) {
+                    mToolbar.removeOnLayoutChangeListener(this);
+                    item.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            item.startAnimation(mAnimation);
+                            if (cityIsEmpty()) {
+                                Toast.makeText(MainActivity.this, R.string.main_snackbar_ID_isEmpty, Toast.LENGTH_SHORT).show();
+                                startActivityForResult(new Intent(MainActivity.this, SettingActivity.class), UPDATE_ACTIVITY_RESULT);
+                            } else {
+                                getWeather();
+                            }
+                        }
+                    });
+                }
+            }
+        });
+    }
 
 
     @Subscribe
@@ -104,11 +136,6 @@ public class MainActivity extends BaseActivity {
         mRecyclerDaily.setLayoutManager(mLinearLayoutManager);
 
         mDailyRecyclerAdapter = new DailyRecyclerAdapter();
-
-        mDataTime = new ArrayList<String>();
-        mDataTmp = new ArrayList<String>();
-        mDataCondText = new ArrayList<String>();
-        mDataCondImage = new ArrayList<String>();
         updateRecyclerData();
         mRecyclerDaily.setAdapter(mDailyRecyclerAdapter);
     }
@@ -117,18 +144,18 @@ public class MainActivity extends BaseActivity {
      * 更新recyclerview数据
      */
     private void updateRecyclerData() {
-        if (!mDataTime.isEmpty()) {
-            mDataTime.clear();
-            mDataCondText.clear();
-            mDataCondImage.clear();
-            mDataTmp.clear();
-        }
-        for (int i = 2; i < 8; i++) {
-            String temp = String.valueOf(i);
-            mDataTime.add((mWeatherMsg.get(Constant.DAILY_TIME + temp)).substring(5));
-            mDataTmp.add(mWeatherMsg.get(Constant.DAILY_TMP_MIN + temp) + "°~" + mWeatherMsg.get(Constant.DAILY_TMP_MAX + temp) + "°");
-            mDataCondText.add(mWeatherMsg.get(Constant.DAILY_COND_d + temp));
-            mDataCondImage.add(mWeatherMsg.get(Constant.DAILY_CODE_d + temp));
+        mDataTime = new ArrayList<String>();
+        mDataTmp = new ArrayList<String>();
+        mDataCondText = new ArrayList<String>();
+        mDataCondImage = new ArrayList<String>();
+        if (!cityIsEmpty()) {
+            for (int i = 2; i < 8; i++) {
+                String temp = String.valueOf(i);
+                mDataTime.add((mWeatherMsg.get(Constant.DAILY_TIME + temp)).substring(5));
+                mDataTmp.add(mWeatherMsg.get(Constant.DAILY_TMP_MIN + temp) + "°~" + mWeatherMsg.get(Constant.DAILY_TMP_MAX + temp) + "°");
+                mDataCondText.add(mWeatherMsg.get(Constant.DAILY_COND_d + temp));
+                mDataCondImage.add(mWeatherMsg.get(Constant.DAILY_CODE_d + temp));
+            }
         }
         mDailyRecyclerAdapter.setmDataCondImage(mDataCondImage);
         mDailyRecyclerAdapter.setmDataCondText(mDataCondText);
@@ -204,14 +231,15 @@ public class MainActivity extends BaseActivity {
         if (id == R.id.menu_main_location) {
             startActivityForResult(new Intent(MainActivity.this, SettingActivity.class), UPDATE_ACTIVITY_RESULT);
             return true;
-        } else if(id == R.id.menu_main_refresh) {
-            if (cityIsEmpty()) {
-                Toast.makeText(MainActivity.this, R.string.main_snackbar_ID_isEmpty, Toast.LENGTH_SHORT).show();
-                startActivityForResult(new Intent(MainActivity.this, SettingActivity.class), UPDATE_ACTIVITY_RESULT);
-            } else {
-                getWeather();
-            }
         }
+//        else if(id == R.id.menu_main_refresh) {
+//            if (cityIsEmpty()) {
+//                Toast.makeText(MainActivity.this, R.string.main_snackbar_ID_isEmpty, Toast.LENGTH_SHORT).show();
+//                startActivityForResult(new Intent(MainActivity.this, SettingActivity.class), UPDATE_ACTIVITY_RESULT);
+//            } else {
+//                getWeather();
+//            }
+//        }
         return super.onOptionsItemSelected(item);
     }
 
