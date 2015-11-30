@@ -1,6 +1,5 @@
 package cchao.org.weatherapp.ui.activity;
 
-import android.animation.ObjectAnimator;
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.graphics.Color;
@@ -9,15 +8,17 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
+import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.View;
 import android.view.animation.Animation;
-import android.view.animation.AnimationUtils;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.rey.material.app.Dialog;
+import com.rey.material.app.DialogFragment;
+import com.rey.material.app.SimpleDialog;
 import com.squareup.otto.Subscribe;
 
 import java.util.ArrayList;
@@ -39,6 +40,8 @@ import cchao.org.weatherapp.utils.HttpUtil;
  */
 public class MainActivity extends BaseActivity {
 
+    private long mExitTime = 0;
+
     //refresh动画
     private Animation mAnimation;
 
@@ -49,6 +52,10 @@ public class MainActivity extends BaseActivity {
     private TextView mNowCond;
     //现在天气状况图片
     private ImageView mNowCondImage;
+    //当前日期
+    private TextView mTime;
+    //当天最高温度和最低温度
+    private TextView mTmp;
     //风向
     private TextView mWindDir;
     //风力
@@ -73,6 +80,8 @@ public class MainActivity extends BaseActivity {
         mNowTmp = (TextView) findViewById(R.id.textview_now_tmp);
         mNowCond = (TextView) findViewById(R.id.textview_now_cond);
         mNowCondImage = (ImageView) findViewById(R.id.imageview_now_cond);
+        mTime = (TextView) findViewById(R.id.textview_time);
+        mTmp = (TextView) findViewById(R.id.textview_tmp);
         mWindDir = (TextView) findViewById(R.id.textview_dir);
         mWindSc = (TextView) findViewById(R.id.textview_sc);
         mSuggestionTxt = (TextView) findViewById(R.id.textview_suggestion_txt);
@@ -84,37 +93,57 @@ public class MainActivity extends BaseActivity {
         BusUtil.getBus().register(this);
         mToolbar.setTitleTextColor(Color.WHITE);
         setSupportActionBar(mToolbar);
+        if (cityIsEmpty()) {
+            Dialog.Builder builder = null;
+            builder = new SimpleDialog.Builder(R.style.SimpleDialogLight){
+                @Override
+                public void onPositiveActionClicked(DialogFragment fragment) {
+                    goSetting();
+                    super.onPositiveActionClicked(fragment);
+                }
+
+                @Override
+                public void onNegativeActionClicked(DialogFragment fragment) {
+                    super.onNegativeActionClicked(fragment);
+                }
+            };
+            builder.title("还未设置地区，现在设置吗?")
+                    .positiveAction("Ok")
+                    .negativeAction("Cancel");
+            DialogFragment fragment = DialogFragment.newInstance(builder);
+            fragment.show(getSupportFragmentManager(), null);
+        }
         mProgressDialog = ProgressDialog.show(this, "请稍等", "刷新中...");
-        mAnimation = AnimationUtils.loadAnimation(MainActivity.this, R.anim.anim_menuitem_refresh);
-        mAnimation.setRepeatCount(Animation.INFINITE);
+//        mAnimation = AnimationUtils.loadAnimation(MainActivity.this, R.anim.anim_menuitem_refresh);
+//        mAnimation.setRepeatCount(Animation.INFINITE);
         updateWeather();
         initRecycler();
     }
 
     @Override
     protected void bindEvent() {
-        mToolbar.addOnLayoutChangeListener(new View.OnLayoutChangeListener() {
-            @Override
-            public void onLayoutChange(View v, int left, int top, int right, int bottom,
-                                       int oldLeft, int oldTop, int oldRight, int oldBottom) {
-                final View item = mToolbar.findViewById(R.id.menu_main_refresh);
-                if (item != null) {
-                    mToolbar.removeOnLayoutChangeListener(this);
-                    item.setOnClickListener(new View.OnClickListener() {
-                        @Override
-                        public void onClick(View v) {
-                            item.startAnimation(mAnimation);
-                            if (cityIsEmpty()) {
-                                Toast.makeText(MainActivity.this, R.string.main_snackbar_ID_isEmpty, Toast.LENGTH_SHORT).show();
-                                startActivityForResult(new Intent(MainActivity.this, SettingActivity.class), UPDATE_ACTIVITY_RESULT);
-                            } else {
-                                getWeather();
-                            }
-                        }
-                    });
-                }
-            }
-        });
+//        mToolbar.addOnLayoutChangeListener(new View.OnLayoutChangeListener() {
+//            @Override
+//            public void onLayoutChange(View v, int left, int top, int right, int bottom,
+//                                       int oldLeft, int oldTop, int oldRight, int oldBottom) {
+//                final View item = mToolbar.findViewById(R.id.menu_main_refresh);
+//                if (item != null) {
+//                    mToolbar.removeOnLayoutChangeListener(this);
+//                    item.setOnClickListener(new View.OnClickListener() {
+//                        @Override
+//                        public void onClick(View v) {
+//                            item.startAnimation(mAnimation);
+//                            if (cityIsEmpty()) {
+//                                Toast.makeText(MainActivity.this, R.string.main_snackbar_ID_isEmpty, Toast.LENGTH_SHORT).show();
+//                                startActivityForResult(new Intent(MainActivity.this, SettingActivity.class), UPDATE_ACTIVITY_RESULT);
+//                            } else {
+//                                getWeather();
+//                            }
+//                        }
+//                    });
+//                }
+//            }
+//        });
     }
 
 
@@ -124,6 +153,11 @@ public class MainActivity extends BaseActivity {
             updateWeather();
             updateRecyclerData();
             mDailyRecyclerAdapter.notifyDataSetChanged();
+        } else if (event.getMsg().equals(Constant.UPDATE_ERROR)) {
+            if(mProgressDialog.isShowing()) {
+                mProgressDialog.dismiss();
+            }
+            Toast.makeText(MainActivity.this, "网络连接失败!", Toast.LENGTH_SHORT).show();
         }
     }
 
@@ -172,8 +206,14 @@ public class MainActivity extends BaseActivity {
             mNowTmp.setText(mWeatherMsg.get(Constant.NOW_TMP) + "°");
             mNowCond.setText(mWeatherMsg.get(Constant.NOW_COND));
             mNowCondImage.setImageDrawable(getImage(mWeatherMsg.get(Constant.NOW_CODE)));
+            mTime.setText(getWhatDay());
+            mTmp.setText(mWeatherMsg.get(Constant.DAILY_TMP_MIN + 1) + "°~" + mWeatherMsg.get(Constant.DAILY_TMP_MAX + 1) + "°");
             mWindDir.setText(mWeatherMsg.get(Constant.NOW_WIND_DIR));
-            mWindSc.setText(mWeatherMsg.get(Constant.NOW_WIND_SC));
+            if (isDigital(mWeatherMsg.get(Constant.NOW_WIND_SC).substring(0, 1))) {
+                mWindSc.setText(mWeatherMsg.get(Constant.NOW_WIND_SC) + "级");
+            } else {
+                mWindSc.setText(mWeatherMsg.get(Constant.NOW_WIND_SC));
+            }
             mSuggestionTxt.setText(mWeatherMsg.get(Constant.SUGGESTION_DRSG));
         } else {
             getSupportActionBar().setTitle("Weather");
@@ -196,14 +236,26 @@ public class MainActivity extends BaseActivity {
                     , param
                     , new HttpUtil.CallBack() {
                 @Override
-                public void onRequestComplete(String result) {
+                public void onSuccess(String result) {
                     Log.i("weather", result);
                     SaveDataController.saveResponse(result);
+                }
+
+                @Override
+                public void onError(String errorMessage) {
+                    BusUtil.getBus().post(new UpdateEvent(Constant.UPDATE_ERROR));
                 }
             });
         }catch (Exception e) {
             e.printStackTrace();
         }
+    }
+
+    /**
+     * 跳转到设置界面
+     */
+    private void goSetting() {
+        startActivityForResult(new Intent(MainActivity.this, SettingActivity.class), UPDATE_ACTIVITY_RESULT);
     }
 
     /**
@@ -229,18 +281,32 @@ public class MainActivity extends BaseActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
         if (id == R.id.menu_main_location) {
-            startActivityForResult(new Intent(MainActivity.this, SettingActivity.class), UPDATE_ACTIVITY_RESULT);
+            goSetting();
+            return true;
+        } else if(id == R.id.menu_main_refresh) {
+            if (cityIsEmpty()) {
+                Toast.makeText(MainActivity.this, R.string.main_snackbar_ID_isEmpty, Toast.LENGTH_SHORT).show();
+                goSetting();
+            } else {
+                getWeather();
+            }
+        }
+        return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    public boolean onKeyDown(int keyCode, KeyEvent event) {
+        if (keyCode == KeyEvent.KEYCODE_BACK) {
+            if ((System.currentTimeMillis() - mExitTime) > 2000) {
+                Toast.makeText(this, "再按一次退出程序", Toast.LENGTH_SHORT).show();
+                mExitTime = System.currentTimeMillis();
+
+            } else {
+                finish();
+            }
             return true;
         }
-//        else if(id == R.id.menu_main_refresh) {
-//            if (cityIsEmpty()) {
-//                Toast.makeText(MainActivity.this, R.string.main_snackbar_ID_isEmpty, Toast.LENGTH_SHORT).show();
-//                startActivityForResult(new Intent(MainActivity.this, SettingActivity.class), UPDATE_ACTIVITY_RESULT);
-//            } else {
-//                getWeather();
-//            }
-//        }
-        return super.onOptionsItemSelected(item);
+        return super.onKeyDown(keyCode, event);
     }
 
     @Override

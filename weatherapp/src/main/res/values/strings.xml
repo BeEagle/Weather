@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">WeatherApp</string>
+    <string name="app_name">简单天气</string>
 
     <!-- MainActivity-->
     <string name="main_snackbar_ID_isEmpty">请先设置地区!</string>

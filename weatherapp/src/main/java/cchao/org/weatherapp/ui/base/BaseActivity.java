@@ -5,6 +5,11 @@ import android.support.v7.app.AppCompatActivity;
 
 import com.rey.material.app.Dialog;
 
+import java.util.Calendar;
+import java.util.TimeZone;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
 import cchao.org.weatherapp.Constant;
 import cchao.org.weatherapp.WeatherApplication;
 import cchao.org.weatherapp.utils.SharedPreferencesUtil;
@@ -21,6 +26,11 @@ public abstract class BaseActivity extends AppCompatActivity{
 
     public SharedPreferencesUtil mWeatherMsg;
 
+    private String mYear;
+    private String mMonth;
+    private String mDay;
+    private String mWay;
+
     @Override
     protected void onCreate(Bundle saveBundle) {
         super.onCreate(saveBundle);
@@ -31,6 +41,46 @@ public abstract class BaseActivity extends AppCompatActivity{
         bindView();
         initData();
         bindEvent();
+    }
+
+    /**
+     * 获取当前日期
+     * @return
+     */
+    public String getWhatDay() {
+        Calendar c = Calendar.getInstance();
+        c.setTimeZone(TimeZone.getTimeZone("GMT+8:00"));
+        mYear = String.valueOf(c.get(Calendar.YEAR)); // 获取当前年份
+        mMonth = String.valueOf(c.get(Calendar.MONTH) + 1);// 获取当前月份
+        mDay = String.valueOf(c.get(Calendar.DAY_OF_MONTH));// 获取当前月份的日期号码
+        mWay = String.valueOf(c.get(Calendar.DAY_OF_WEEK));
+        if("1".equals(mWay)){
+            mWay ="天";
+        }else if("2".equals(mWay)){
+            mWay ="一";
+        }else if("3".equals(mWay)){
+            mWay ="二";
+        }else if("4".equals(mWay)){
+            mWay ="三";
+        }else if("5".equals(mWay)){
+            mWay ="四";
+        }else if("6".equals(mWay)){
+            mWay ="五";
+        }else if("7".equals(mWay)){
+            mWay ="六";
+        }
+        return mMonth + "月" + mDay+"日"+"/星期"+mWay;
+    }
+
+    /**
+     * 判断是否为数字
+     * @param str
+     * @return
+     */
+    public boolean isDigital(String str) {
+        Pattern mPattern = Pattern.compile("^[0-9]*$");
+        Matcher matcher = mPattern.matcher(str);
+        return matcher.matches();
     }
 
     /**

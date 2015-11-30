@@ -53,7 +53,7 @@
 
         <com.rey.material.widget.Button
             android:layout_marginTop="@dimen/padding"
-            android:elevation="@dimen/button_resting_z"
+            android:elevation="@dimen/button_pressed_z"
             android:id="@+id/button"
             android:text="@string/setting_ok"
             android:textSize="@dimen/big_text_size"

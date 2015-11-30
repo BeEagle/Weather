@@ -18,7 +18,8 @@ public class HttpUtil {
     private static final int TIMEOUT_IN_MILLIONS = 5000;
 
     public interface CallBack {
-        void onRequestComplete(String result);
+        void onSuccess(String result);
+        void onError(String errorMessage);
     }
 
     /**
@@ -32,7 +33,7 @@ public class HttpUtil {
                 try {
                     String result = doGet(urlStr);
                     if (callBack != null) {
-                        callBack.onRequestComplete(result);
+                        callBack.onSuccess(result);
                     }
                 } catch (Exception e) {
                     e.printStackTrace();
@@ -54,8 +55,10 @@ public class HttpUtil {
             public void run() {
                 try {
                     String result = doPost(urlStr, params);
-                    if (callBack != null) {
-                        callBack.onRequestComplete(result);
+                    if (callBack != null && !result.equals("timeout")) {
+                        callBack.onSuccess(result);
+                    } else {
+                        callBack.onError(result);
                     }
                 } catch (Exception e) {
                     e.printStackTrace();
@@ -82,8 +85,10 @@ public class HttpUtil {
                     }
                     params.deleteCharAt(params.length() - 1);
                     String result = doPost(urlStr, params.toString());
-                    if (callBack != null) {
-                        callBack.onRequestComplete(result);
+                    if (callBack != null && !result.equals("timeout")) {
+                        callBack.onSuccess(result);
+                    } else {
+                        callBack.onError(result);
                     }
                 } catch (Exception e) {
                     e.printStackTrace();
@@ -196,6 +201,7 @@ public class HttpUtil {
             }
         } catch (Exception e) {
             e.printStackTrace();
+            return "timeout";
         }
         // 使用finally块来关闭输出流、输入流
         finally {

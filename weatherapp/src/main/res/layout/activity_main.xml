@@ -21,7 +21,7 @@
         android:layout_marginLeft="@dimen/margin"
         android:text="20°"
         android:textColor="@color/general_white"
-        android:textSize="120sp"
+        android:textSize="128sp"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content" />
 
@@ -53,6 +53,28 @@
         android:layout_height="wrap_content">
 
         <TextView
+            android:layout_marginLeft="@dimen/margin"
+            android:layout_marginTop="@dimen/margin"
+            android:id="@+id/textview_time"
+            android:text="11月30日/星期一"
+            android:textSize="@dimen/normal_text_size"
+            android:textColor="@color/general_white"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+
+        <TextView
+            android:id="@+id/textview_tmp"
+            android:layout_toRightOf="@+id/textview_time"
+            android:layout_marginLeft="@dimen/margin"
+            android:layout_marginTop="@dimen/margin"
+            android:text="12°-42°"
+            android:textSize="@dimen/normal_text_size"
+            android:textColor="@color/general_white"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+
+        <TextView
+            android:layout_toRightOf="@+id/textview_tmp"
             android:id="@+id/textview_dir"
             android:text="南风"
             android:layout_marginLeft="@dimen/margin"
@@ -64,7 +86,7 @@
 
         <TextView
             android:id="@+id/textview_sc"
-            android:text="2-3"
+            android:text="2-3级"
             android:layout_toRightOf="@id/textview_dir"
             android:layout_marginLeft="@dimen/margin"
             android:layout_marginTop="@dimen/margin"

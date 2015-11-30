@@ -78,7 +78,7 @@ public class DailyRecyclerAdapter extends RecyclerView.Adapter<DailyRecyclerAdap
     /**
      * 获取天气图标
      * @param imageName 天气名称(数字)
-     * @return
+     * @return 天气图标drawable对象
      */
     private Drawable getImage(String imageName) {
         int id = WeatherApplication.getInstance().getResources().getIdentifier("w" + imageName, "drawable", "cchao.org.weatherapp");
