@@ -2,10 +2,10 @@
 一个小的天气App
 
 ##效果图
-![image](https://github.com/shucc/Weather/blob/master/demoImages/1.png)
+![image](https://github.com/shucc/Weather/blob/master/demoImages/one.png)
 ![image](https://github.com/shucc/Weather/blob/master/demoImages/2.png)
 ![image](https://github.com/shucc/Weather/blob/master/demoImages/3.png)
-![image](https://github.com/shucc/Weather/blob/master/demoImages/4.png)gi
+![image](https://github.com/shucc/Weather/blob/master/demoImages/4.png)
 
 ##使用的开源项目
 **[https://github.com/rey5137/material](https://github.com/rey5137/material)**
