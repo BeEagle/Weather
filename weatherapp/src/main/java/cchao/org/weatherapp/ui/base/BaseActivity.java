@@ -3,8 +3,6 @@ package cchao.org.weatherapp.ui.base;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 
-import com.rey.material.app.Dialog;
-
 import java.util.Calendar;
 import java.util.TimeZone;
 import java.util.regex.Matcher;
