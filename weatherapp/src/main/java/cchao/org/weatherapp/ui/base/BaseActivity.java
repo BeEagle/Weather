@@ -33,7 +33,7 @@ public abstract class BaseActivity extends AppCompatActivity{
     protected void onCreate(Bundle saveBundle) {
         super.onCreate(saveBundle);
         setContentView(getContentView());
-
+        getWindow().setBackgroundDrawable(null);
         mWeatherMsg = WeatherApplication.getInstance().getWeatherMsg();
 
         bindView();

@@ -44,11 +44,11 @@
         <item name="android:textColor">@color/general_black</item>
     </style>
 
-    <style name="LightInCircularProgressDrawable" parent="Material.Drawable.CircularProgress">
-        <item name="cpd_strokeColor">@color/colorAccent</item>
-        <item name="cpd_inAnimDuration">800</item>
-        <item name="cpd_inStepPercent">0.7</item>
-        <item name="cpd_inStepColors">@array/in_colors_light</item>
-        <item name="cpd_outAnimDuration">400</item>
-    </style>
+    <!--<style name="LightInCircularProgressDrawable" parent="Material.Drawable.CircularProgress">-->
+        <!--<item name="cpd_strokeColor">@color/colorAccent</item>-->
+        <!--<item name="cpd_inAnimDuration">800</item>-->
+        <!--<item name="cpd_inStepPercent">0.7</item>-->
+        <!--<item name="cpd_inStepColors">@array/in_colors_light</item>-->
+        <!--<item name="cpd_outAnimDuration">400</item>-->
+    <!--</style>-->
 </resources>

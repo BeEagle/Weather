@@ -11,7 +11,6 @@ import android.util.Log;
 import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.animation.Animation;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -41,9 +40,6 @@ import cchao.org.weatherapp.utils.HttpUtil;
 public class MainActivity extends BaseActivity {
 
     private long mExitTime = 0;
-
-    //refresh动画
-    private Animation mAnimation;
 
     private Toolbar mToolbar;
     //现在温度
@@ -114,36 +110,12 @@ public class MainActivity extends BaseActivity {
             fragment.show(getSupportFragmentManager(), null);
         }
         mProgressDialog = ProgressDialog.show(this, "请稍等", "刷新中...");
-//        mAnimation = AnimationUtils.loadAnimation(MainActivity.this, R.anim.anim_menuitem_refresh);
-//        mAnimation.setRepeatCount(Animation.INFINITE);
         updateWeather();
         initRecycler();
     }
 
     @Override
     protected void bindEvent() {
-//        mToolbar.addOnLayoutChangeListener(new View.OnLayoutChangeListener() {
-//            @Override
-//            public void onLayoutChange(View v, int left, int top, int right, int bottom,
-//                                       int oldLeft, int oldTop, int oldRight, int oldBottom) {
-//                final View item = mToolbar.findViewById(R.id.menu_main_refresh);
-//                if (item != null) {
-//                    mToolbar.removeOnLayoutChangeListener(this);
-//                    item.setOnClickListener(new View.OnClickListener() {
-//                        @Override
-//                        public void onClick(View v) {
-//                            item.startAnimation(mAnimation);
-//                            if (cityIsEmpty()) {
-//                                Toast.makeText(MainActivity.this, R.string.main_snackbar_ID_isEmpty, Toast.LENGTH_SHORT).show();
-//                                startActivityForResult(new Intent(MainActivity.this, SettingActivity.class), UPDATE_ACTIVITY_RESULT);
-//                            } else {
-//                                getWeather();
-//                            }
-//                        }
-//                    });
-//                }
-//            }
-//        });
     }
 
 

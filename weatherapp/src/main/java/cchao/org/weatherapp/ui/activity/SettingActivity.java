@@ -5,8 +5,11 @@ import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Color;
 import android.support.v7.widget.Toolbar;
 import android.view.KeyEvent;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.ArrayAdapter;
+import android.widget.Toast;
 
 import com.rey.material.app.Dialog;
 import com.rey.material.app.DialogFragment;
@@ -251,6 +254,21 @@ public class SettingActivity extends BaseActivity {
             }
         });
     }
+
+//    @Override
+//    public boolean onCreateOptionsMenu(Menu menu) {
+//        getMenuInflater().inflate(R.menu.menu_setting, menu);
+//        return true;
+//    }
+//
+//    @Override
+//    public boolean onOptionsItemSelected(MenuItem item) {
+//        int id = item.getItemId();
+//        if (id == R.id.menu_setting_search) {
+//            Toast.makeText(SettingActivity.this, "Search", Toast.LENGTH_SHORT).show();
+//        }
+//        return super.onOptionsItemSelected(item);
+//    }
 
     @Override
     public boolean onKeyDown(int keyCode, KeyEvent event) {
