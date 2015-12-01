@@ -64,7 +64,7 @@ public class SaveDataController {
                 }
 
                 weatherMsg.save(Constant.SUGGESTION_DRSG, suggestion_obj.getJSONObject("drsg").getString("txt"));
-                BusUtil.getBus().post(new UpdateEvent(Constant.UPDATE_MSG));
+                BusUtil.getBus().post(new UpdateEvent(Constant.UPDATE_SUCCESS));
             }
         } catch (JSONException e) {
             e.printStackTrace();

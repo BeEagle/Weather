@@ -2,7 +2,7 @@ package cchao.org.weatherapp;
 
 public class Constant {
 
-    public static String UPDATE_MSG = "update";
+    public static String UPDATE_SUCCESS = "update";
     public static String UPDATE_ERROR = "error";
 
     //获取天气key

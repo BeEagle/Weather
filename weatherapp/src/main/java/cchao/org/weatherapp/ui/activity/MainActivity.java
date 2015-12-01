@@ -3,11 +3,9 @@ package cchao.org.weatherapp.ui.activity;
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.graphics.Color;
-import android.graphics.drawable.Drawable;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -33,6 +31,7 @@ import cchao.org.weatherapp.ui.adapter.DailyRecyclerAdapter;
 import cchao.org.weatherapp.ui.base.BaseActivity;
 import cchao.org.weatherapp.utils.BusUtil;
 import cchao.org.weatherapp.utils.HttpUtil;
+import cchao.org.weatherapp.utils.WeatherIconUtil;
 
 /**
  * Created by chenchao on 15/11/13.
@@ -121,7 +120,7 @@ public class MainActivity extends BaseActivity {
 
     @Subscribe
     public void subscribeUpdate(UpdateEvent event) {
-        if (event.getMsg().equals(Constant.UPDATE_MSG)) {
+        if (event.getMsg().equals(Constant.UPDATE_SUCCESS)) {
             updateWeather();
             updateRecyclerData();
             mDailyRecyclerAdapter.notifyDataSetChanged();
@@ -163,10 +162,7 @@ public class MainActivity extends BaseActivity {
                 mDataCondImage.add(mWeatherMsg.get(Constant.DAILY_CODE_d + temp));
             }
         }
-        mDailyRecyclerAdapter.setmDataCondImage(mDataCondImage);
-        mDailyRecyclerAdapter.setmDataCondText(mDataCondText);
-        mDailyRecyclerAdapter.setmDataTime(mDataTime);
-        mDailyRecyclerAdapter.setmDataTmp(mDataTmp);
+        mDailyRecyclerAdapter.setmData(mDataTime, mDataCondImage, mDataCondText, mDataTmp);
     }
 
     /**
@@ -177,7 +173,7 @@ public class MainActivity extends BaseActivity {
             getSupportActionBar().setTitle(mWeatherMsg.get(Constant.CITY_NAME));
             mNowTmp.setText(mWeatherMsg.get(Constant.NOW_TMP) + "°");
             mNowCond.setText(mWeatherMsg.get(Constant.NOW_COND));
-            mNowCondImage.setImageDrawable(getImage(mWeatherMsg.get(Constant.NOW_CODE)));
+            mNowCondImage.setImageDrawable(WeatherIconUtil.getWeatherIcon(mWeatherMsg.get(Constant.NOW_CODE)));
             mTime.setText(getWhatDay());
             mTmp.setText(mWeatherMsg.get(Constant.DAILY_TMP_MIN + 1) + "°~" + mWeatherMsg.get(Constant.DAILY_TMP_MAX + 1) + "°");
             mWindDir.setText(mWeatherMsg.get(Constant.NOW_WIND_DIR));
@@ -209,12 +205,11 @@ public class MainActivity extends BaseActivity {
                     , new HttpUtil.CallBack() {
                 @Override
                 public void onSuccess(String result) {
-                    Log.i("weather", result);
                     SaveDataController.saveResponse(result);
                 }
 
                 @Override
-                public void onError(String errorMessage) {
+                public void onError() {
                     BusUtil.getBus().post(new UpdateEvent(Constant.UPDATE_ERROR));
                 }
             });
@@ -228,19 +223,6 @@ public class MainActivity extends BaseActivity {
      */
     private void goSetting() {
         startActivityForResult(new Intent(MainActivity.this, SettingActivity.class), UPDATE_ACTIVITY_RESULT);
-    }
-
-    /**
-     * 获取天气图标
-     * @param imageName 天气名称(数字)
-     * @return
-     */
-    private Drawable getImage(String imageName) {
-        int id = getResources().getIdentifier("w" + imageName, "drawable", "cchao.org.weatherapp");
-        if(id != 0){
-            return getResources().getDrawable(id);
-        }
-        return getResources().getDrawable(getResources().getIdentifier("w999", "drawable", "cchao.org.weatherapp"));
     }
 
     @Override

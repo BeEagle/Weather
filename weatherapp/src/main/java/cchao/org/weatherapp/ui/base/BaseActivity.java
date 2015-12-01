@@ -24,7 +24,6 @@ public abstract class BaseActivity extends AppCompatActivity{
 
     public SharedPreferencesUtil mWeatherMsg;
 
-    private String mYear;
     private String mMonth;
     private String mDay;
     private String mWay;
@@ -48,7 +47,6 @@ public abstract class BaseActivity extends AppCompatActivity{
     public String getWhatDay() {
         Calendar c = Calendar.getInstance();
         c.setTimeZone(TimeZone.getTimeZone("GMT+8:00"));
-        mYear = String.valueOf(c.get(Calendar.YEAR)); // 获取当前年份
         mMonth = String.valueOf(c.get(Calendar.MONTH) + 1);// 获取当前月份
         mDay = String.valueOf(c.get(Calendar.DAY_OF_MONTH));// 获取当前月份的日期号码
         mWay = String.valueOf(c.get(Calendar.DAY_OF_WEEK));

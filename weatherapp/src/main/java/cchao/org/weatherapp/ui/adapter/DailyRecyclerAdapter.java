@@ -1,6 +1,5 @@
 package cchao.org.weatherapp.ui.adapter;
 
-import android.graphics.drawable.Drawable;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -12,7 +11,7 @@ import com.rey.material.widget.TextView;
 import java.util.ArrayList;
 
 import cchao.org.weatherapp.R;
-import cchao.org.weatherapp.WeatherApplication;
+import cchao.org.weatherapp.utils.WeatherIconUtil;
 
 /**
  * Created by chenchao on 15/11/27.
@@ -24,19 +23,13 @@ public class DailyRecyclerAdapter extends RecyclerView.Adapter<DailyRecyclerAdap
     private ArrayList<String> mDataCondText;
     private ArrayList<String> mDataCondImage;
 
-    public void setmDataTime(ArrayList<String> mDataTime) {
+    public void setmData(ArrayList<String> mDataTime
+            , ArrayList<String> mDataCondImage
+            , ArrayList<String> mDataCondText
+            , ArrayList<String> mDataTmp) {
         this.mDataTime = mDataTime;
-    }
-
-    public void setmDataCondImage(ArrayList<String> mDataCondImage) {
         this.mDataCondImage = mDataCondImage;
-    }
-
-    public void setmDataCondText(ArrayList<String> mDataCondText) {
         this.mDataCondText = mDataCondText;
-    }
-
-    public void setmDataTmp(ArrayList<String> mDataTmp) {
         this.mDataTmp = mDataTmp;
     }
 
@@ -53,7 +46,7 @@ public class DailyRecyclerAdapter extends RecyclerView.Adapter<DailyRecyclerAdap
         viewHolder.mTimeTextView.setText(mDataTime.get(i));
         viewHolder.mTmpTextView.setText(mDataTmp.get(i));
         viewHolder.mCondTextView.setText(mDataCondText.get(i));
-        viewHolder.mCondImageView.setImageDrawable(getImage(mDataCondImage.get(i)));
+        viewHolder.mCondImageView.setImageDrawable(WeatherIconUtil.getWeatherIcon(mDataCondImage.get(i)));
     }
 
     @Override
@@ -73,18 +66,5 @@ public class DailyRecyclerAdapter extends RecyclerView.Adapter<DailyRecyclerAdap
             mCondTextView = (TextView) itemView.findViewById(R.id.recycler_daily_item_cond_text);
             mCondImageView = (ImageView) itemView.findViewById(R.id.recycler_daily_item_cond_image);
         }
-    }
-
-    /**
-     * 获取天气图标
-     * @param imageName 天气名称(数字)
-     * @return 天气图标drawable对象
-     */
-    private Drawable getImage(String imageName) {
-        int id = WeatherApplication.getInstance().getResources().getIdentifier("w" + imageName, "drawable", "cchao.org.weatherapp");
-        if(id != 0){
-            return WeatherApplication.getInstance().getResources().getDrawable(id);
-        }
-        return WeatherApplication.getInstance().getResources().getDrawable(WeatherApplication.getInstance().getResources().getIdentifier("w999", "drawable", "cchao.org.weatherapp"));
     }
 }
