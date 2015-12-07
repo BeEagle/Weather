@@ -102,7 +102,6 @@ public class HttpUtil {
                     "application/x-www-form-urlencoded");
             conn.setRequestProperty("charset", "utf-8");
             conn.setUseCaches(false);
-            // 发送POST请求必须设置如下两行
             conn.setDoOutput(true);
             conn.setDoInput(true);
             conn.setReadTimeout(TIMEOUT_IN_MILLIONS);

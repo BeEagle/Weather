@@ -6,6 +6,7 @@ import android.graphics.Color;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -25,6 +26,7 @@ import java.util.Map;
 import cchao.org.weatherapp.Constant;
 import cchao.org.weatherapp.R;
 import cchao.org.weatherapp.api.Api;
+import cchao.org.weatherapp.api.Key;
 import cchao.org.weatherapp.controller.SaveDataController;
 import cchao.org.weatherapp.event.UpdateEvent;
 import cchao.org.weatherapp.ui.adapter.DailyRecyclerAdapter;
@@ -198,13 +200,14 @@ public class MainActivity extends BaseActivity {
         mProgressDialog.show();
         Map<String, String> param = new HashMap<String, String>();
         param.put("cityid", "CN" + mWeatherMsg.get(Constant.CITY_ID));
-        param.put("key", Constant.KEY);
+        param.put("key", Key.KEY);
         try{
             HttpUtil.doPostAsyn(Api.getWeatherUri()
                     , param
                     , new HttpUtil.CallBack() {
                 @Override
                 public void onSuccess(String result) {
+                    Log.i("weather", result);
                     SaveDataController.saveResponse(result);
                 }
 
