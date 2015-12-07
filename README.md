@@ -7,6 +7,15 @@
 ![image](https://github.com/shucc/Weather/blob/master/demoImages/three.png)
 ![image](https://github.com/shucc/Weather/blob/master/demoImages/four.png)
 
+##项目中使用的Key
+在weatherapp/src/main/java/cchao/org/weatherapp/api中新建一个Key.java
+
+```java
+public class Key {
+    public static String KEY = "你的key";
+}
+```
+
 ##使用的开源项目
 **[https://github.com/rey5137/material](https://github.com/rey5137/material)**
 
