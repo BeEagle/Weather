@@ -8,7 +8,7 @@
 ![image](https://github.com/shucc/Weather/blob/master/demoImages/four.png)
 
 ##项目中使用的Key
-在weatherapp/src/main/java/cchao/org/weatherapp/api中新建一个Key.java
+使用的是[和风天气](http://www.heweather.com/)接口，申请后获得一个key，在weatherapp/src/main/java/cchao/org/weatherapp/api中新建一个Key.java
 
 ```java
 public class Key {
