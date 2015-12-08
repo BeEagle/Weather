@@ -1,11 +1,25 @@
 package cchao.org.weatherapp.controller;
 
+import android.util.Log;
+
+import com.google.gson.Gson;
+
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import cchao.org.weatherapp.Constant;
 import cchao.org.weatherapp.WeatherApplication;
+import cchao.org.weatherapp.bean.Aqi;
+import cchao.org.weatherapp.bean.Basic;
+import cchao.org.weatherapp.bean.DailyForecast;
+import cchao.org.weatherapp.bean.HourlyForecast;
+import cchao.org.weatherapp.bean.Now;
+import cchao.org.weatherapp.bean.Suggestion;
+import cchao.org.weatherapp.bean.WeatherMsg;
 import cchao.org.weatherapp.event.UpdateEvent;
 import cchao.org.weatherapp.utils.BusUtil;
 import cchao.org.weatherapp.utils.SharedPreferencesUtil;
@@ -15,59 +29,99 @@ import cchao.org.weatherapp.utils.SharedPreferencesUtil;
  */
 public class SaveDataController {
 
+    private static SaveDataController saveDataController;
+    private Gson gson;
+    private WeatherMsg weatherMsg;
+    private Aqi aqi;
+    private Basic basic;
+    private List<DailyForecast> dailyForecastList = new ArrayList<DailyForecast>();
+    private DailyForecast dailyForecast;
+    private List<HourlyForecast> hourlyForecastList = new ArrayList<HourlyForecast>();
+    private Now now;
+    private Suggestion suggestion;
+    private String status;
+
+    public static SaveDataController getSaveDataController() {
+        if (saveDataController == null) {
+            saveDataController = new SaveDataController();
+        }
+        return saveDataController;
+    }
+
     /**
      * 保存天气信息到本地
      * @param data
      */
-    public static void saveResponse(String data) {
-        SharedPreferencesUtil weatherMsg = WeatherApplication.getInstance().getWeatherMsg();
+    public void saveResponse(String data) {
+
+        resolveJson(data);
+        SharedPreferencesUtil weatherShareUtil = WeatherApplication.getInstance().getWeatherMsg();
+
+        weatherShareUtil.save(Constant.AQI, aqi.getCity().getAqi());
+        weatherShareUtil.save(Constant.PM25, aqi.getCity().getPm25());
+        weatherShareUtil.save(Constant.QLTY, aqi.getCity().getQlty());
+
+        weatherShareUtil.save(Constant.NOW_TMP, now.getTmp());
+        weatherShareUtil.save(Constant.NOW_CODE, now.getCond().getCode());
+        weatherShareUtil.save(Constant.NOW_COND, now.getCond().getTxt());
+        weatherShareUtil.save(Constant.NOW_WIND_DIR, now.getWind().getDir());
+        weatherShareUtil.save(Constant.NOW_WIND_SC, now.getWind().getSc());
+
+        for (int i = 1; i < 8; i++) {
+            dailyForecast = dailyForecastList.get(i - 1);
+            String temp = String.valueOf(i);
+            weatherShareUtil.save(Constant.DAILY_TIME + temp, dailyForecast.getDate());
+            weatherShareUtil.save(Constant.DAILY_TMP_MAX + temp, dailyForecast.getTmp().getMax());
+            weatherShareUtil.save(Constant.DAILY_TMP_MIN + temp, dailyForecast.getTmp().getMin());
+            weatherShareUtil.save(Constant.DAILY_COND_d + temp, dailyForecast.getCond().getTxtD());
+            weatherShareUtil.save(Constant.DAILY_CODE_d + temp, dailyForecast.getCond().getCodeD());
+            weatherShareUtil.save(Constant.DAILY_COND_n + temp, dailyForecast.getCond().getTxtN());
+            weatherShareUtil.save(Constant.DAILY_CODE_n + temp, dailyForecast.getCond().getCodeN());
+            weatherShareUtil.save(Constant.DAILY_WIND_DIR + temp, dailyForecast.getWind().getDir());
+            weatherShareUtil.save(Constant.DAILY_WIND_SC + temp, dailyForecast.getWind().getSc());
+        }
+        weatherShareUtil.save(Constant.SUGGESTION_DRSG, suggestion.getDrsg().getTxt());
+
+        BusUtil.getBus().post(new UpdateEvent(Constant.UPDATE_SUCCESS));
+    }
+
+    /**
+     * 解析json数据为bean对象，接口很傻逼草
+     * @param data
+     */
+    private void resolveJson(String data) {
+        init();
+        gson = new Gson();
         try {
             JSONObject weatherObj = new JSONObject(data);
             JSONArray weatherArray = weatherObj.getJSONArray("HeWeather data service 3.0");
-            JSONObject jsonObject = weatherArray.getJSONObject(0);
-            if (jsonObject.getString("status").equals("ok")) {
-                //空气质量指数
-                //JSONObject aqi_obj = jsonObject.getJSONObject("aqi");
-                //城市基本信息
-                JSONObject basic_obj = jsonObject.getJSONObject("basic");
-                //实况天气
-                JSONObject now_obj = jsonObject.getJSONObject("now");
-                //生活指数
-                JSONObject suggestion_obj = jsonObject.getJSONObject("suggestion");
-                //天气预报
-                JSONArray daily_forecast_array = jsonObject.getJSONArray("daily_forecast");
-                //每小时天气预报
-                JSONArray hourly_forecast_array = jsonObject.getJSONArray("hourly_forecast");
+            JSONObject obj = new JSONObject();
+            obj.put("heweather", weatherArray.get(0));
 
-                //weatherMsg.save(Constant.AQI, aqi_obj.getJSONObject("city").getString("aqi"));
-                //weatherMsg.save(Constant.PM25, aqi_obj.getJSONObject("city").getString("pm25"));
-                //weatherMsg.save(Constant.QLTY, aqi_obj.getJSONObject("city").getString("qlty"));
+            weatherMsg = gson.fromJson(obj.toString(), WeatherMsg.class);
+            aqi = weatherMsg.getHeweather().getAqi();
+            basic = weatherMsg.getHeweather().getBasic();
+            dailyForecastList = weatherMsg.getHeweather().getDailyForecast();
+            hourlyForecastList = weatherMsg.getHeweather().getHourlyForecast();
+            now = weatherMsg.getHeweather().getNow();
+            suggestion = weatherMsg.getHeweather().getSuggestion();
+            status = weatherMsg.getHeweather().getStatus();
 
-                weatherMsg.save(Constant.NOW_TMP, now_obj.getString("tmp"));
-                weatherMsg.save(Constant.NOW_CODE, now_obj.getJSONObject("cond").getString("code"));
-                weatherMsg.save(Constant.NOW_COND, now_obj.getJSONObject("cond").getString("txt"));
-                weatherMsg.save(Constant.NOW_WIND_DIR, now_obj.getJSONObject("wind").getString("dir"));
-                weatherMsg.save(Constant.NOW_WIND_SC, now_obj.getJSONObject("wind").getString("sc"));
-
-                for (int i = 1; i < 8; i++) {
-                    JSONObject dailyObj = daily_forecast_array.getJSONObject(i - 1);
-                    String temp = String.valueOf(i);
-                    weatherMsg.save(Constant.DAILY_TIME + temp, dailyObj.getString("date"));
-                    weatherMsg.save(Constant.DAILY_TMP_MAX + temp, dailyObj.getJSONObject("tmp").getString("max"));
-                    weatherMsg.save(Constant.DAILY_TMP_MIN + temp, dailyObj.getJSONObject("tmp").getString("min"));
-                    weatherMsg.save(Constant.DAILY_COND_d + temp, dailyObj.getJSONObject("cond").getString("txt_d"));
-                    weatherMsg.save(Constant.DAILY_CODE_d + temp, dailyObj.getJSONObject("cond").getString("code_d"));
-                    weatherMsg.save(Constant.DAILY_COND_n + temp, dailyObj.getJSONObject("cond").getString("txt_n"));
-                    weatherMsg.save(Constant.DAILY_CODE_n + temp, dailyObj.getJSONObject("cond").getString("code_n"));
-                    weatherMsg.save(Constant.DAILY_WIND_DIR + temp, dailyObj.getJSONObject("wind").getString("dir"));
-                    weatherMsg.save(Constant.DAILY_WIND_SC + String.valueOf(i + 1), dailyObj.getJSONObject("wind").getString("sc"));
-                }
-
-                weatherMsg.save(Constant.SUGGESTION_DRSG, suggestion_obj.getJSONObject("drsg").getString("txt"));
-                BusUtil.getBus().post(new UpdateEvent(Constant.UPDATE_SUCCESS));
-            }
         } catch (JSONException e) {
             e.printStackTrace();
         }
+    }
+
+    /**
+     * 初始化
+     */
+    private void init() {
+        if (!dailyForecastList.isEmpty()) {
+            dailyForecastList.clear();
+        }
+        if (!hourlyForecastList.isEmpty()) {
+            hourlyForecastList.clear();
+        }
+
     }
 }

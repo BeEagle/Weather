@@ -6,7 +6,6 @@ import android.graphics.Color;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -207,8 +206,7 @@ public class MainActivity extends BaseActivity {
                     , new HttpUtil.CallBack() {
                 @Override
                 public void onSuccess(String result) {
-                    Log.i("weather", result);
-                    SaveDataController.saveResponse(result);
+                    SaveDataController.getSaveDataController().saveResponse(result);
                 }
 
                 @Override

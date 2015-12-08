@@ -89,12 +89,25 @@ public abstract class BaseActivity extends AppCompatActivity{
         return false;
     }
 
+    /**
+     * 获取界面布局
+     * @return
+     */
     abstract protected int getContentView();
 
+    /**
+     * 界面控件绑定
+     */
     abstract protected void bindView();
 
+    /**
+     * 初始化数据
+     */
     abstract protected void initData();
 
+    /**
+     * 绑定事件监听
+     */
     abstract protected void bindEvent();
 
 }

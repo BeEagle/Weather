@@ -25,6 +25,10 @@ A library to bring fully animated Material Design components to pre-Lolipop Andr
 
 An enhanced Guava-based event bus with emphasis on Android support.
 
+**[https://github.com/google/gson.git](https://github.com/google/gson.git)**
+
+A Java serialization library that can convert Java Objects into JSON and back.
+
 ###License
 
 Copyright (c) 2015 shucc
