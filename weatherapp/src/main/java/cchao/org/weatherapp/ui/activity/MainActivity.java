@@ -6,6 +6,7 @@ import android.graphics.Color;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -18,6 +19,7 @@ import com.rey.material.app.DialogFragment;
 import com.rey.material.app.SimpleDialog;
 import com.squareup.otto.Subscribe;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
@@ -195,17 +197,18 @@ public class MainActivity extends BaseActivity {
     /**
      * 从服务器获取天气信息
      */
-    private void getWeather() {
+    private void getWeather(){
         mProgressDialog.show();
         Map<String, String> param = new HashMap<String, String>();
         param.put("cityid", "CN" + mWeatherMsg.get(Constant.CITY_ID));
         param.put("key", Key.KEY);
         try{
             HttpUtil.doPostAsyn(Api.getWeatherUri()
-                    , param
+                    , "CN" + mWeatherMsg.get(Constant.CITY_ID)
                     , new HttpUtil.CallBack() {
                 @Override
                 public void onSuccess(String result) {
+                    Log.i("weather", result);
                     SaveDataController.getSaveDataController().saveResponse(result);
                 }
 

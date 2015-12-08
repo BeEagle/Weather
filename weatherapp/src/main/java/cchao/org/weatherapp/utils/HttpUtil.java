@@ -1,43 +1,40 @@
 package cchao.org.weatherapp.utils;
 
-import java.io.BufferedReader;
+import android.util.Log;
+
+import com.squareup.okhttp.FormEncodingBuilder;
+import com.squareup.okhttp.OkHttpClient;
+import com.squareup.okhttp.Request;
+import com.squareup.okhttp.RequestBody;
+import com.squareup.okhttp.Response;
+
 import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.PrintWriter;
-import java.net.HttpURLConnection;
-import java.net.URL;
-import java.util.Map;
+
+import cchao.org.weatherapp.api.Key;
 
 /**
  * 网络请求类
  * Created by chenchao on 15/11/13.
  */
 public class HttpUtil {
-    private static final int TIMEOUT_IN_MILLIONS = 5000;
+
+    private static OkHttpClient okHttpClient;
+    private static Request request;
+    private static RequestBody requestBody;
+    private static Response response;
 
     public interface CallBack {
         void onSuccess(String result);
         void onError();
     }
 
-    /**
-     * 异步的Post请求
-     * @param urlStr
-     * @param params 参数，形如cityid=475847&key=23423
-     * @param callBack
-     * @throws Exception
-     */
-    public static void doPostAsyn(final String urlStr, final String params,
+    public static void doPostAsyn(final String urlStr, final String param,
                                   final CallBack callBack) throws Exception {
         new Thread() {
             public void run() {
                 try {
-                    String result = doPost(urlStr, params);
-                    if (result == null) {
-                        callBack.onError();
-                    } else if (callBack != null){
-                        callBack.onSuccess(result);
-                    }
+                    String result = post(urlStr, param);
+                    callBack.onSuccess(result);
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
@@ -45,100 +42,22 @@ public class HttpUtil {
         }.start();
     }
 
-    /**
-     * 异步Post请求
-     * @param urlStr
-     * @param map   map型参数
-     * @param callBack
-     * @throws Exception
-     */
-    public static void doPostAsyn(final String urlStr, final Map<String, String> map,
-                                  final CallBack callBack) throws Exception {
-        new Thread() {
-            public void run() {
-                try {
-                    StringBuffer params = new StringBuffer();
-                    for (Map.Entry<String, String> mapParam : map.entrySet()) {
-                        params.append(mapParam.getKey() + "=" + mapParam.getValue() + "&");
-                    }
-                    params.deleteCharAt(params.length() - 1);
-                    String result = doPost(urlStr, params.toString());
-                    if (result == null) {
-                        callBack.onError();
-                    } else if (callBack != null){
-                        callBack.onSuccess(result);
-                    }
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-            };
-        }.start();
-    }
-
-    /**
-     * 向指定 URL 发送POST方法的请求
-     *
-     * @param url
-     *            发送请求的 URL
-     * @param param
-     *            请求参数，请求参数应该是 name1=value1&name2=value2 的形式。
-     * @return 所代表远程资源的响应结果
-     * @throws Exception
-     */
-    private static String doPost(String url, String param) {
-        PrintWriter out = null;
-        BufferedReader in = null;
-        String result = "";
-        try {
-            URL realUrl = new URL(url);
-            // 打开和URL之间的连接
-            HttpURLConnection conn = (HttpURLConnection) realUrl
-                    .openConnection();
-            // 设置通用的请求属性
-            conn.setRequestProperty("accept", "*/*");
-            conn.setRequestProperty("connection", "Keep-Alive");
-            conn.setRequestMethod("POST");
-            conn.setRequestProperty("Content-Type",
-                    "application/x-www-form-urlencoded");
-            conn.setRequestProperty("charset", "utf-8");
-            conn.setUseCaches(false);
-            conn.setDoOutput(true);
-            conn.setDoInput(true);
-            conn.setReadTimeout(TIMEOUT_IN_MILLIONS);
-            conn.setConnectTimeout(TIMEOUT_IN_MILLIONS);
-
-            if (param != null && !param.trim().equals("")) {
-                // 获取URLConnection对象对应的输出流
-                out = new PrintWriter(conn.getOutputStream());
-                // 发送请求参数
-                out.print(param);
-                // flush输出流的缓冲
-                out.flush();
-            }
-            // 定义BufferedReader输入流来读取URL的响应
-            in = new BufferedReader(
-                    new InputStreamReader(conn.getInputStream()));
-            String line;
-            while ((line = in.readLine()) != null) {
-                result += line;
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-            return null;
+    public static String post(String uri, String cityCode) throws IOException{
+        okHttpClient = new OkHttpClient();
+        requestBody = new FormEncodingBuilder()
+                .add("cityid", cityCode)
+                .add("key", Key.KEY)
+                .build();
+        request = new Request.Builder()
+                .url(uri)
+                .post(requestBody)
+                .build();
+        response = okHttpClient.newCall(request).execute();
+        if (response.isSuccessful()) {
+            //response.body().string()不能用两次，否则报异常
+            return response.body().string();
+        } else {
+            throw new IOException("Unexpected code " + response);
         }
-        // 使用finally块来关闭输出流、输入流
-        finally {
-            try {
-                if (out != null) {
-                    out.close();
-                }
-                if (in != null) {
-                    in.close();
-                }
-            } catch (IOException ex) {
-                ex.printStackTrace();
-            }
-        }
-        return result;
     }
 }
