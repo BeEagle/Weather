@@ -1,7 +1,5 @@
 package cchao.org.weatherapp.controller;
 
-import android.util.Log;
-
 import com.google.gson.Gson;
 
 import org.json.JSONArray;
@@ -53,16 +51,17 @@ public class SaveDataController {
      * @param data
      */
     public void saveResponse(String data) {
-
         resolveJson(data);
         if (!status.equals("ok")) {
             BusUtil.getBus().post(new UpdateEvent(Constant.UPDATE_ERROR));
         } else {
             SharedPreferencesUtil weatherShareUtil = WeatherApplication.getInstance().getWeatherMsg();
 
-            weatherShareUtil.save(Constant.AQI, aqi.getCity().getAqi());
-            weatherShareUtil.save(Constant.PM25, aqi.getCity().getPm25());
-            weatherShareUtil.save(Constant.QLTY, aqi.getCity().getQlty());
+            if (aqi != null) {
+                weatherShareUtil.save(Constant.AQI, aqi.getCity().getAqi());
+                weatherShareUtil.save(Constant.PM25, aqi.getCity().getPm25());
+                weatherShareUtil.save(Constant.QLTY, aqi.getCity().getQlty());
+            }
 
             weatherShareUtil.save(Constant.NOW_TMP, now.getTmp());
             weatherShareUtil.save(Constant.NOW_CODE, now.getCond().getCode());

@@ -29,6 +29,10 @@ An enhanced Guava-based event bus with emphasis on Android support.
 
 A Java serialization library that can convert Java Objects into JSON and back.
 
+**[https://github.com/square/okhttp](https://github.com/square/okhttp)**
+
+An HTTP+SPDY client for Android and Java applications.
+
 ###License
 
 Copyright (c) 2015 shucc

@@ -3,6 +3,8 @@
 
     <!-- MainActivity-->
     <string name="main_snackbar_ID_isEmpty">请先设置地区!</string>
+    <string name="main_exit_toast">再按一次退出程序!</string>
+    <string name="main_network_error">网络访问错误!</string>
 
     <!-- SettingActivity-->
     <string name="setting">设置地区</string>

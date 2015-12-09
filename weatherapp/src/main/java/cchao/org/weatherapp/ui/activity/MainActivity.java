@@ -6,7 +6,6 @@ import android.graphics.Color;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -17,6 +16,9 @@ import android.widget.Toast;
 import com.rey.material.app.Dialog;
 import com.rey.material.app.DialogFragment;
 import com.rey.material.app.SimpleDialog;
+import com.squareup.okhttp.Callback;
+import com.squareup.okhttp.Request;
+import com.squareup.okhttp.Response;
 import com.squareup.otto.Subscribe;
 
 import java.io.IOException;
@@ -131,7 +133,7 @@ public class MainActivity extends BaseActivity {
             if(mProgressDialog.isShowing()) {
                 mProgressDialog.dismiss();
             }
-            Toast.makeText(MainActivity.this, "网络连接失败!", Toast.LENGTH_SHORT).show();
+            Toast.makeText(MainActivity.this, R.string.main_network_error, Toast.LENGTH_SHORT).show();
         }
     }
 
@@ -203,18 +205,17 @@ public class MainActivity extends BaseActivity {
         param.put("cityid", "CN" + mWeatherMsg.get(Constant.CITY_ID));
         param.put("key", Key.KEY);
         try{
-            HttpUtil.doPostAsyn(Api.getWeatherUri()
-                    , "CN" + mWeatherMsg.get(Constant.CITY_ID)
-                    , new HttpUtil.CallBack() {
+            HttpUtil.post(Api.getWeatherUri()
+                    , param
+                    , new Callback() {
                 @Override
-                public void onSuccess(String result) {
-                    Log.i("weather", result);
-                    SaveDataController.getSaveDataController().saveResponse(result);
+                public void onFailure(Request request, IOException e) {
+                    BusUtil.getBus().post(new UpdateEvent(Constant.UPDATE_ERROR));
                 }
 
                 @Override
-                public void onError() {
-                    BusUtil.getBus().post(new UpdateEvent(Constant.UPDATE_ERROR));
+                public void onResponse(Response response) throws IOException {
+                    SaveDataController.getSaveDataController().saveResponse(response.body().string());
                 }
             });
         }catch (Exception e) {
@@ -256,9 +257,8 @@ public class MainActivity extends BaseActivity {
     public boolean onKeyDown(int keyCode, KeyEvent event) {
         if (keyCode == KeyEvent.KEYCODE_BACK) {
             if ((System.currentTimeMillis() - mExitTime) > 2000) {
-                Toast.makeText(this, "再按一次退出程序", Toast.LENGTH_SHORT).show();
+                Toast.makeText(this, R.string.main_exit_toast, Toast.LENGTH_SHORT).show();
                 mExitTime = System.currentTimeMillis();
-
             } else {
                 finish();
             }

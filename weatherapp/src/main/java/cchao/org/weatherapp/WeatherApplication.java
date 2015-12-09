@@ -1,6 +1,9 @@
 package cchao.org.weatherapp;
 
 import android.app.Application;
+
+import com.squareup.okhttp.OkHttpClient;
+
 import cchao.org.weatherapp.utils.SharedPreferencesUtil;
 
 /**
@@ -9,13 +12,15 @@ import cchao.org.weatherapp.utils.SharedPreferencesUtil;
 public class WeatherApplication extends Application{
 
     private static WeatherApplication instance;
-    public static SharedPreferencesUtil weatherMsg;
+    private SharedPreferencesUtil weatherMsg;
+    private OkHttpClient client;
 
     @Override
     public void onCreate(){
         super.onCreate();
         instance = this;
         weatherMsg = new SharedPreferencesUtil(this);
+        client = new OkHttpClient();
     }
 
     public static WeatherApplication getInstance(){
@@ -24,5 +29,9 @@ public class WeatherApplication extends Application{
 
     public SharedPreferencesUtil getWeatherMsg() {
         return weatherMsg;
+    }
+
+    public OkHttpClient getClient() {
+        return client;
     }
 }
