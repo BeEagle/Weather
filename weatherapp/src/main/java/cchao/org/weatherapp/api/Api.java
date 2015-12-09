@@ -5,7 +5,7 @@ package cchao.org.weatherapp.api;
  */
 public class Api {
 
-    private final static String WEATHER_URI = "https://api.heweather.com/x3/weather";
+    private final static String WEATHER_URI = "https://api.heweather.com/";
 
     public static String getWeatherUri(){
         return WEATHER_URI;

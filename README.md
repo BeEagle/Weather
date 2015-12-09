@@ -1,5 +1,5 @@
 # Weather
-一个小的天气App
+一个小的天气App,主要用于学习Retrofit+OkHttp+RxJava+Gson
 
 ##效果图
 ![image](https://github.com/shucc/Weather/blob/master/demoImages/one.png)
@@ -33,8 +33,13 @@ A Java serialization library that can convert Java Objects into JSON and back.
 
 An HTTP+SPDY client for Android and Java applications.
 
+**[https://github.com/square/retrofit.git](https://github.com/square/retrofit.git)**
+
+Type-safe HTTP client for Android and Java by Square, Inc.
+
 ###License
 
+```
 Copyright (c) 2015 shucc
 
 Licensed under the Apache License, Version 2.0 (the "License”);
@@ -48,3 +53,4 @@ distributed under the License is distributed on an "AS IS" BASIS,
 WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
+```

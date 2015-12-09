@@ -16,19 +16,12 @@ import android.widget.Toast;
 import com.rey.material.app.Dialog;
 import com.rey.material.app.DialogFragment;
 import com.rey.material.app.SimpleDialog;
-import com.squareup.okhttp.Callback;
-import com.squareup.okhttp.Request;
-import com.squareup.okhttp.Response;
 import com.squareup.otto.Subscribe;
 
-import java.io.IOException;
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Map;
 
 import cchao.org.weatherapp.Constant;
 import cchao.org.weatherapp.R;
-import cchao.org.weatherapp.api.Api;
 import cchao.org.weatherapp.api.Key;
 import cchao.org.weatherapp.controller.SaveDataController;
 import cchao.org.weatherapp.event.UpdateEvent;
@@ -37,6 +30,7 @@ import cchao.org.weatherapp.ui.base.BaseActivity;
 import cchao.org.weatherapp.utils.BusUtil;
 import cchao.org.weatherapp.utils.HttpUtil;
 import cchao.org.weatherapp.utils.WeatherIconUtil;
+import retrofit.Retrofit;
 
 /**
  * Created by chenchao on 15/11/13.
@@ -201,26 +195,21 @@ public class MainActivity extends BaseActivity {
      */
     private void getWeather(){
         mProgressDialog.show();
-        Map<String, String> param = new HashMap<String, String>();
-        param.put("cityid", "CN" + mWeatherMsg.get(Constant.CITY_ID));
-        param.put("key", Key.KEY);
-        try{
-            HttpUtil.post(Api.getWeatherUri()
-                    , param
-                    , new Callback() {
-                @Override
-                public void onFailure(Request request, IOException e) {
-                    BusUtil.getBus().post(new UpdateEvent(Constant.UPDATE_ERROR));
-                }
+        HttpUtil.retrofitPost(
+                "CN" + mWeatherMsg.get(Constant.CITY_ID),
+                Key.KEY,
+                new retrofit.Callback<String>() {
+                    @Override
+                    public void onResponse(retrofit.Response<String> response, Retrofit retrofit) {
+                        SaveDataController.getSaveDataController().saveResponse(response.body().toString());
+                    }
 
-                @Override
-                public void onResponse(Response response) throws IOException {
-                    SaveDataController.getSaveDataController().saveResponse(response.body().string());
+                    @Override
+                    public void onFailure(Throwable t) {
+                        BusUtil.getBus().post(new UpdateEvent(Constant.UPDATE_ERROR));
+                    }
                 }
-            });
-        }catch (Exception e) {
-            e.printStackTrace();
-        }
+        );
     }
 
     /**

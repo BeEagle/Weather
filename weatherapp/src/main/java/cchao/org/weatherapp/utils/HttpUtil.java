@@ -1,15 +1,10 @@
 package cchao.org.weatherapp.utils;
 
-import android.util.Log;
-
-import com.squareup.okhttp.Callback;
-import com.squareup.okhttp.FormEncodingBuilder;
-import com.squareup.okhttp.Request;
-
-import java.io.IOException;
-import java.util.Map;
-
-import cchao.org.weatherapp.WeatherApplication;
+import cchao.org.weatherapp.api.Api;
+import cchao.org.weatherapp.network.MyConverter;
+import cchao.org.weatherapp.network.WeatherMsgService;
+import retrofit.Call;
+import retrofit.Retrofit;
 
 /**
  * 网络请求类
@@ -17,25 +12,22 @@ import cchao.org.weatherapp.WeatherApplication;
  */
 public class HttpUtil {
 
-    private static Request mRequest;
-    private static FormEncodingBuilder mFormEncodingBuilder;
+    private static MyConverter myConverter;
 
     /**
-     * post请求
-     * @param uri   请求地址
-     * @param params    参数
-     * @param callback  回调
-     * @throws IOException
+     * retrofit post异步请求
+     * @param cityid
+     * @param key
+     * @param callback 回调
      */
-    public static void post(String uri, Map<String, String> params, Callback callback) throws IOException{
-        mFormEncodingBuilder = new FormEncodingBuilder();
-        for (String key : params.keySet()) {
-            mFormEncodingBuilder.add(key, params.get(key));
-        }
-        mRequest = new Request.Builder()
-                .url(uri)
-                .post(mFormEncodingBuilder.build())
+    public static void retrofitPost(String cityid, String key, retrofit.Callback<String> callback) {
+        myConverter = new MyConverter();
+        Retrofit retrofit = new Retrofit.Builder()
+                .baseUrl(Api.getWeatherUri())
+                .addConverterFactory(myConverter)
                 .build();
-        WeatherApplication.getInstance().getClient().newCall(mRequest).enqueue(callback);
+        WeatherMsgService weatherMsgService = retrofit.create(WeatherMsgService.class);
+        Call<String> result = weatherMsgService.getWeatherMsg(cityid, key);
+        result.enqueue(callback);
     }
 }
