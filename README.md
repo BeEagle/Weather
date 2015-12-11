@@ -25,7 +25,7 @@ A library to bring fully animated Material Design components to pre-Lolipop Andr
 
 An enhanced Guava-based event bus with emphasis on Android support.
 
-**[https://github.com/google/gson.git](https://github.com/google/gson.git)**
+**[https://github.com/google/gson](https://github.com/google/gson)**
 
 A Java serialization library that can convert Java Objects into JSON and back.
 
@@ -33,7 +33,7 @@ A Java serialization library that can convert Java Objects into JSON and back.
 
 An HTTP+SPDY client for Android and Java applications.
 
-**[https://github.com/square/retrofit.git](https://github.com/square/retrofit.git)**
+**[https://github.com/square/retrofit](https://github.com/square/retrofit)**
 
 Type-safe HTTP client for Android and Java by Square, Inc.
 
