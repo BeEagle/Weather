@@ -88,7 +88,7 @@ public class MainActivity extends BaseActivity {
         mToolbar.setTitleTextColor(Color.WHITE);
         setSupportActionBar(mToolbar);
         if (cityIsEmpty()) {
-            Dialog.Builder builder = null;
+            Dialog.Builder builder;
             builder = new SimpleDialog.Builder(R.style.SimpleDialogLight){
                 @Override
                 public void onPositiveActionClicked(DialogFragment fragment) {
@@ -201,7 +201,7 @@ public class MainActivity extends BaseActivity {
                 new retrofit.Callback<String>() {
                     @Override
                     public void onResponse(retrofit.Response<String> response, Retrofit retrofit) {
-                        SaveDataController.getSaveDataController().saveResponse(response.body().toString());
+                        SaveDataController.getSaveDataController().saveResponse(response.body());
                     }
 
                     @Override
