@@ -2,11 +2,10 @@ package cchao.org.weatherapp.ui.base;
 
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.text.TextUtils;
 
 import java.util.Calendar;
 import java.util.TimeZone;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 import cchao.org.weatherapp.Constant;
 import cchao.org.weatherapp.WeatherApplication;
@@ -74,9 +73,7 @@ public abstract class BaseActivity extends AppCompatActivity{
      * @return
      */
     public boolean isDigital(String str) {
-        Pattern mPattern = Pattern.compile("^[0-9]*$");
-        Matcher matcher = mPattern.matcher(str);
-        return matcher.matches();
+        return TextUtils.isDigitsOnly(str);
     }
 
     /**
