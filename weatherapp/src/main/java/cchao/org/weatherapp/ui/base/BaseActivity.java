@@ -81,9 +81,7 @@ public abstract class BaseActivity extends AppCompatActivity{
      * @return
      */
     public boolean cityIsEmpty() {
-        if (mWeatherMsg.get(Constant.CITY_ID).equals(""))
-            return true;
-        return false;
+        return mWeatherMsg.get(Constant.CITY_ID).equals("");
     }
 
     /**

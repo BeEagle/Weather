@@ -95,11 +95,6 @@ public class MainActivity extends BaseActivity {
                     goSetting();
                     super.onPositiveActionClicked(fragment);
                 }
-
-                @Override
-                public void onNegativeActionClicked(DialogFragment fragment) {
-                    super.onNegativeActionClicked(fragment);
-                }
             };
             builder.title("还未设置地区，现在设置吗?")
                     .positiveAction("Ok")
