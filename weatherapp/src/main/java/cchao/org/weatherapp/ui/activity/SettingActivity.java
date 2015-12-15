@@ -5,11 +5,8 @@ import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Color;
 import android.support.v7.widget.Toolbar;
 import android.view.KeyEvent;
-import android.view.Menu;
-import android.view.MenuItem;
 import android.view.View;
 import android.widget.ArrayAdapter;
-import android.widget.Toast;
 
 import com.rey.material.app.Dialog;
 import com.rey.material.app.DialogFragment;
@@ -91,7 +88,7 @@ public class SettingActivity extends BaseActivity {
         mOkButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Dialog.Builder builder = null;
+                Dialog.Builder builder;
                 builder = new SimpleDialog.Builder(R.style.SimpleDialogLight){
                     @Override
                     public void onPositiveActionClicked(DialogFragment fragment) {
@@ -103,11 +100,6 @@ public class SettingActivity extends BaseActivity {
                         setResult(UPDATE_ACTIVITY_RESULT);
                         finish();
                         super.onPositiveActionClicked(fragment);
-                    }
-
-                    @Override
-                    public void onNegativeActionClicked(DialogFragment fragment) {
-                        super.onNegativeActionClicked(fragment);
                     }
                 };
                 builder.title("确定显示地区为" + mCountrySpinner.getSelectedItem().toString()+ "吗?")
