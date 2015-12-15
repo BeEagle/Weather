@@ -63,6 +63,8 @@ public class MainActivity extends BaseActivity {
     private DailyRecyclerAdapter mDailyRecyclerAdapter;
     private ArrayList<String> mDataTime, mDataTmp, mDataCondText, mDataCondImage;
 
+    private HttpUtil mHttpUtil;
+
     @Override
     protected int getContentView() {
         return R.layout.activity_main;
@@ -85,6 +87,7 @@ public class MainActivity extends BaseActivity {
     @Override
     protected void initData() {
         BusUtil.getBus().register(this);
+        mHttpUtil = new HttpUtil();
         mToolbar.setTitleTextColor(Color.WHITE);
         setSupportActionBar(mToolbar);
         if (cityIsEmpty()) {
@@ -190,7 +193,7 @@ public class MainActivity extends BaseActivity {
      */
     private void getWeather(){
         mProgressDialog.show();
-        HttpUtil.retrofitPost(
+        mHttpUtil.retrofitPost(
                 "CN" + mWeatherMsg.get(Constant.CITY_ID),
                 Key.KEY,
                 new retrofit.Callback<String>() {
@@ -262,6 +265,7 @@ public class MainActivity extends BaseActivity {
     @Override
     protected void onDestroy() {
         super.onDestroy();
+        mHttpUtil.cancel();
         BusUtil.getBus().unregister(this);
     }
 }

@@ -11,10 +11,10 @@ import java.lang.reflect.Type;
 import retrofit.Converter;
 
 /**
- * 自定义Converter，返回字符串不需要解析
+ * 字符串Converter
  * Created by chenchao on 15/12/9.
  */
-public class MyConverter extends Converter.Factory{
+public class StringConverterFactory extends Converter.Factory{
 
     @Override
     public Converter<ResponseBody, ?> fromResponseBody(Type type, Annotation[] annotations) {

@@ -13,14 +13,12 @@ public class WeatherApplication extends Application{
 
     private static WeatherApplication instance;
     private SharedPreferencesUtil weatherMsg;
-    private OkHttpClient client;
 
     @Override
     public void onCreate(){
         super.onCreate();
         instance = this;
         weatherMsg = new SharedPreferencesUtil(this);
-        client = new OkHttpClient();
     }
 
     public static WeatherApplication getInstance(){
@@ -29,9 +27,5 @@ public class WeatherApplication extends Application{
 
     public SharedPreferencesUtil getWeatherMsg() {
         return weatherMsg;
-    }
-
-    public OkHttpClient getClient() {
-        return client;
     }
 }
