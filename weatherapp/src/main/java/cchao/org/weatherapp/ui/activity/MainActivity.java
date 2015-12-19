@@ -23,6 +23,7 @@ import java.util.ArrayList;
 import cchao.org.weatherapp.Constant;
 import cchao.org.weatherapp.R;
 import cchao.org.weatherapp.api.Key;
+import cchao.org.weatherapp.bean.ApiResultVO;
 import cchao.org.weatherapp.controller.SaveDataController;
 import cchao.org.weatherapp.event.UpdateEvent;
 import cchao.org.weatherapp.ui.adapter.DailyRecyclerAdapter;
@@ -196,9 +197,9 @@ public class MainActivity extends BaseActivity {
         mHttpUtil.retrofitPost(
                 "CN" + mWeatherMsg.get(Constant.CITY_ID),
                 Key.KEY,
-                new retrofit.Callback<String>() {
+                new retrofit.Callback<ApiResultVO>() {
                     @Override
-                    public void onResponse(retrofit.Response<String> response, Retrofit retrofit) {
+                    public void onResponse(retrofit.Response<ApiResultVO> response, Retrofit retrofit) {
                         SaveDataController.getSaveDataController().saveResponse(response.body());
                     }
 
@@ -229,7 +230,7 @@ public class MainActivity extends BaseActivity {
         if (id == R.id.menu_main_location) {
             goSetting();
             return true;
-        } else if(id == R.id.menu_main_refresh) {
+        } else if (id == R.id.menu_main_refresh) {
             if (cityIsEmpty()) {
                 Toast.makeText(MainActivity.this, R.string.main_snackbar_ID_isEmpty, Toast.LENGTH_SHORT).show();
                 goSetting();
