@@ -1,5 +1,6 @@
 package cchao.org.weatherapp.network;
 
+import cchao.org.weatherapp.bean.ApiResultVO;
 import retrofit.Call;
 import retrofit.http.Field;
 import retrofit.http.FormUrlEncoded;
@@ -12,6 +13,6 @@ public interface WeatherMsgService {
 
     @FormUrlEncoded
     @POST("x3/weather")
-    Call<String> getWeatherMsg(@Field("cityid") String cityid, @Field("key") String key);
+    Call<ApiResultVO> getWeatherMsg(@Field("cityid") String cityid, @Field("key") String key);
 
 }
