@@ -24,6 +24,7 @@ public class HttpUtil {
      * @param callback 回调
      */
     public void retrofitPost(String cityid, String key, retrofit.Callback<ApiResultVO> callback) {
+
         retrofit = new Retrofit.Builder()
                 .baseUrl(Api.getWeatherUri())
                 .addConverterFactory(GsonConverterFactory.create())
@@ -31,12 +32,5 @@ public class HttpUtil {
         weatherMsgService = retrofit.create(WeatherMsgService.class);
         call = weatherMsgService.getWeatherMsg(cityid, key);
         call.enqueue(callback);
-    }
-
-    /**
-     * 取消事务
-     */
-    public void cancel() {
-        call.cancel();
     }
 }
