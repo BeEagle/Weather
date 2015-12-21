@@ -37,6 +37,8 @@ public class HttpUtil {
      * 取消事务
      */
     public void cancel() {
-        call.cancel();
+        if (call != null) {
+            call.cancel();
+        }
     }
 }
