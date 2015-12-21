@@ -33,4 +33,13 @@ public class HttpUtil {
         call = weatherMsgService.getWeatherMsg(cityid, key);
         call.enqueue(callback);
     }
+
+    /**
+     * 取消事务
+     */
+    public void cancel() {
+        if (call != null) {
+            call.cancel();
+        }
+    }
 }
