@@ -8,7 +8,7 @@ import android.content.SharedPreferences;
  * 操作SharedPreferences
  * Created by chenchao on 15/11/27.
  */
-public class SharedPreferencesUtil {
+public class SPUtil {
 
     private final String WEATHER_MESSAGE = "weatherMsg";
 
@@ -18,7 +18,7 @@ public class SharedPreferencesUtil {
 
     private SharedPreferences.Editor editor;
 
-    public SharedPreferencesUtil(Context context) {
+    public SPUtil(Context context) {
         this.context = context;
         sharedPreferences = context.getSharedPreferences(WEATHER_MESSAGE, Activity.MODE_PRIVATE);
         editor = sharedPreferences.edit();

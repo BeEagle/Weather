@@ -8,8 +8,8 @@ import java.util.Calendar;
 import java.util.TimeZone;
 
 import cchao.org.weatherapp.Constant;
-import cchao.org.weatherapp.WeatherApplication;
-import cchao.org.weatherapp.utils.SharedPreferencesUtil;
+import cchao.org.weatherapp.App;
+import cchao.org.weatherapp.utils.SPUtil;
 
 /**
  * Created by chenchao on 15/11/27.
@@ -21,7 +21,7 @@ public abstract class BaseActivity extends AppCompatActivity{
     //存储城市代码的数据库
     public static final String DB_NAME = "city.db";
 
-    public SharedPreferencesUtil mWeatherMsg;
+    public SPUtil mWeatherMsg;
 
     private String mMonth;
     private String mDay;
@@ -32,7 +32,7 @@ public abstract class BaseActivity extends AppCompatActivity{
         super.onCreate(saveBundle);
         setContentView(getContentView());
         getWindow().setBackgroundDrawable(null);
-        mWeatherMsg = WeatherApplication.getInstance().getWeatherMsg();
+        mWeatherMsg = App.getInstance().getWeatherMsg();
 
         bindView();
         initData();

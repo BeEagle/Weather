@@ -10,6 +10,7 @@ import com.squareup.otto.ThreadEnforcer;
  * Created by chenchao on 15/11/27.
  */
 public class MyBus extends Bus{
+
     private final Handler mHandler = new Handler(Looper.getMainLooper());
 
     public MyBus(){

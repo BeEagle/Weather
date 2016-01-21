@@ -9,11 +9,16 @@ import cchao.org.weatherapp.MyBus;
  * Created by chenchao on 15/11/27.
  */
 public class BusUtil {
-    private static MyBus bus;
 
-    public synchronized static Bus getBus() {
+    private static MyBus bus = null;
+
+    public static Bus getBus() {
         if (bus == null) {
-            bus = new MyBus(ThreadEnforcer.ANY);
+            synchronized (BusUtil.class) {
+                if (bus == null) {
+                    bus = new MyBus(ThreadEnforcer.ANY);
+                }
+            }
         }
         return bus;
     }
