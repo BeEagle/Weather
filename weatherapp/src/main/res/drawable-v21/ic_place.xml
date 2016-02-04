@@ -1,0 +1,18 @@
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="96dp"
+    android:height="96dp"
+    android:viewportWidth="96"
+    android:viewportHeight="96">
+
+    <path
+        android:fillColor="@color/weather_icon_color"
+        android:strokeColor="@color/weather_icon_color"
+        android:strokeWidth="1"
+        android:pathData="M46,8 C50.03,7.96,54.14,7.78,58,9.11 C60.74,10.05,63.72,11.73,65.99,13.53
+C84.36,28.04,74.6,52.03,64.31,68 C61.19,72.84,57.86,77.55,54.2,82
+C52.95,83.5,50.92,86.15,48.97,86.66 C46.22,87.39,44.19,84.8,42.61,82.98
+C38.8,78.58,34.16,71.98,31.03,67 C20.93,50.69,11.64,26.75,31.03,12.79
+C34.08,10.57,36.42,9.6,40,8.53 C42.65,8.1,43.31,8.04,46,8 Z M50.98,44.57
+C58.27,42.56,58.18,33.04,54.57,29.43 C51.87,26.73,48.46,26.94,45.02,27.43
+C34.09,31.98,38.93,47.9,50.98,44.57 Z" />
+</vector>

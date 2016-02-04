@@ -28,4 +28,6 @@
     <!-- 分割线-->
     <color name="divide_black">#1e000000</color>
     <color name="divide_white">#1effffff</color>
+
+    <color name="weather_icon_color">#ffffffff</color>
 </resources>
