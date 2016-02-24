@@ -5,16 +5,14 @@ import java.util.List;
 
 import cchao.org.weatherapp.Constant;
 import cchao.org.weatherapp.App;
-import cchao.org.weatherapp.bean.ApiResultVO;
-import cchao.org.weatherapp.bean.ApiResultVO.HeWeather;
-import cchao.org.weatherapp.bean.ApiResultVO.HeWeather.Aqi;
-import cchao.org.weatherapp.bean.ApiResultVO.HeWeather.Basic;
-import cchao.org.weatherapp.bean.ApiResultVO.HeWeather.DailyForecast;
-import cchao.org.weatherapp.bean.ApiResultVO.HeWeather.HourlyForecast;
-import cchao.org.weatherapp.bean.ApiResultVO.HeWeather.Now;
-import cchao.org.weatherapp.bean.ApiResultVO.HeWeather.Suggestion;
-import cchao.org.weatherapp.event.UpdateEvent;
-import cchao.org.weatherapp.utils.BusUtil;
+import cchao.org.weatherapp.vo.ApiResultVO;
+import cchao.org.weatherapp.vo.ApiResultVO.HeWeather;
+import cchao.org.weatherapp.vo.ApiResultVO.HeWeather.Aqi;
+import cchao.org.weatherapp.vo.ApiResultVO.HeWeather.Basic;
+import cchao.org.weatherapp.vo.ApiResultVO.HeWeather.DailyForecast;
+import cchao.org.weatherapp.vo.ApiResultVO.HeWeather.HourlyForecast;
+import cchao.org.weatherapp.vo.ApiResultVO.HeWeather.Now;
+import cchao.org.weatherapp.vo.ApiResultVO.HeWeather.Suggestion;
 import cchao.org.weatherapp.utils.SPUtil;
 
 /**
@@ -44,10 +42,10 @@ public class SaveDataController {
      * 保存天气信息到本地
      * @param data
      */
-    public void saveResponse(ApiResultVO data) {
+    public Boolean saveResponse(ApiResultVO data) {
         resolveJson(data);
         if (!status.equals("ok")) {
-            BusUtil.getBus().post(new UpdateEvent(Constant.UPDATE_ERROR));
+            return false;
         } else {
             SPUtil spUtil = App.getInstance().getWeatherMsg();
 
@@ -78,7 +76,7 @@ public class SaveDataController {
             }
             spUtil.save(Constant.SUGGESTION_DRSG, suggestion.getDrsg().getTxt());
 
-            BusUtil.getBus().post(new UpdateEvent(Constant.UPDATE_SUCCESS));
+            return true;
         }
     }
 

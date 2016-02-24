@@ -12,25 +12,21 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.rey.material.app.Dialog;
-import com.rey.material.app.DialogFragment;
-import com.rey.material.app.SimpleDialog;
-import com.squareup.otto.Subscribe;
-
 import java.util.ArrayList;
 
 import cchao.org.weatherapp.Constant;
 import cchao.org.weatherapp.R;
 import cchao.org.weatherapp.api.Key;
-import cchao.org.weatherapp.bean.ApiResultVO;
+import cchao.org.weatherapp.vo.ApiResultVO;
 import cchao.org.weatherapp.controller.SaveDataController;
-import cchao.org.weatherapp.event.UpdateEvent;
 import cchao.org.weatherapp.ui.adapter.DailyRecyclerAdapter;
 import cchao.org.weatherapp.ui.base.BaseActivity;
-import cchao.org.weatherapp.utils.BusUtil;
 import cchao.org.weatherapp.utils.HttpUtil;
 import cchao.org.weatherapp.utils.WeatherIconUtil;
-import retrofit.Retrofit;
+import rx.Subscriber;
+import rx.android.schedulers.AndroidSchedulers;
+import rx.functions.Func1;
+import rx.schedulers.Schedulers;
 
 /**
  * Created by chenchao on 15/11/13.
@@ -63,8 +59,6 @@ public class MainActivity extends BaseActivity {
     private DailyRecyclerAdapter mDailyRecyclerAdapter;
     private ArrayList<String> mDataTime, mDataTmp, mDataCondText, mDataCondImage;
 
-    private HttpUtil mHttpUtil;
-
     @Override
     protected int getContentView() {
         return R.layout.activity_main;
@@ -86,24 +80,10 @@ public class MainActivity extends BaseActivity {
 
     @Override
     protected void initData() {
-        BusUtil.getBus().register(this);
-        mHttpUtil = new HttpUtil();
         mToolbar.setTitleTextColor(Color.WHITE);
         setSupportActionBar(mToolbar);
         if (cityIsEmpty()) {
-            Dialog.Builder builder;
-            builder = new SimpleDialog.Builder(R.style.SimpleDialogLight){
-                @Override
-                public void onPositiveActionClicked(DialogFragment fragment) {
-                    goSetting();
-                    super.onPositiveActionClicked(fragment);
-                }
-            };
-            builder.title("还未设置地区，现在设置吗?")
-                    .positiveAction("Ok")
-                    .negativeAction("Cancel");
-            DialogFragment fragment = DialogFragment.newInstance(builder);
-            fragment.show(getSupportFragmentManager(), null);
+            goSetting();
         }
         mProgressDialog = ProgressDialog.show(this, "请稍等", "刷新中...");
         updateWeather();
@@ -114,19 +94,48 @@ public class MainActivity extends BaseActivity {
     protected void bindEvent() {
     }
 
+    /**
+     * 从服务器获取天气信息
+     */
+    private void getWeather(){
+        mProgressDialog.show();
+        HttpUtil.retrofitPost("CN" + mWeatherMsg.get(Constant.CITY_ID), Key.KEY)
+                .subscribeOn(Schedulers.io())
+                .observeOn(Schedulers.io())
+                .map(new Func1<ApiResultVO, Boolean>() {
+                    @Override
+                    public Boolean call(ApiResultVO apiResultVO) {
+                        return SaveDataController.getSaveDataController().saveResponse(apiResultVO);
+                    }
+                })
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Subscriber<Boolean>() {
+                    @Override
+                    public void onCompleted() {
+                    }
 
-    @Subscribe
-    public void subscribeUpdate(UpdateEvent event) {
-        if (event.getMsg().equals(Constant.UPDATE_SUCCESS)) {
-            updateWeather();
-            updateRecyclerData();
-            mDailyRecyclerAdapter.notifyDataSetChanged();
-        } else if (event.getMsg().equals(Constant.UPDATE_ERROR)) {
-            if(mProgressDialog.isShowing()) {
-                mProgressDialog.dismiss();
-            }
-            Toast.makeText(MainActivity.this, R.string.main_network_error, Toast.LENGTH_SHORT).show();
-        }
+                    @Override
+                    public void onError(Throwable e) {
+                        if(mProgressDialog.isShowing()) {
+                            mProgressDialog.dismiss();
+                        }
+                        Toast.makeText(MainActivity.this, R.string.main_network_error, Toast.LENGTH_SHORT).show();
+                    }
+
+                    @Override
+                    public void onNext(Boolean aBoolean) {
+                        if (aBoolean) {
+                            updateWeather();
+                            updateRecyclerData();
+                            mDailyRecyclerAdapter.notifyDataSetChanged();
+                        } else {
+                            if(mProgressDialog.isShowing()) {
+                                mProgressDialog.dismiss();
+                            }
+                            Toast.makeText(MainActivity.this, R.string.main_network_error, Toast.LENGTH_SHORT).show();
+                        }
+                    }
+                });
     }
 
     /**
@@ -189,28 +198,6 @@ public class MainActivity extends BaseActivity {
     }
 
     /**
-     * 从服务器获取天气信息
-     */
-    private void getWeather(){
-        mProgressDialog.show();
-        mHttpUtil.retrofitPost(
-                "CN" + mWeatherMsg.get(Constant.CITY_ID),
-                Key.KEY,
-                new retrofit.Callback<ApiResultVO>() {
-                    @Override
-                    public void onResponse(retrofit.Response<ApiResultVO> response, Retrofit retrofit) {
-                        SaveDataController.getSaveDataController().saveResponse(response.body());
-                    }
-
-                    @Override
-                    public void onFailure(Throwable t) {
-                        BusUtil.getBus().post(new UpdateEvent(Constant.UPDATE_ERROR));
-                    }
-                }
-        );
-    }
-
-    /**
      * 跳转到设置界面
      */
     private void goSetting() {
@@ -256,12 +243,5 @@ public class MainActivity extends BaseActivity {
         if (resultCode == UPDATE_ACTIVITY_RESULT) {
             getWeather();
         }
-    }
-
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
-        mHttpUtil.cancel();
-        BusUtil.getBus().unregister(this);
     }
 }

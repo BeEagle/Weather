@@ -1,4 +1,4 @@
-package cchao.org.weatherapp.bean;
+package cchao.org.weatherapp.vo;
 
 import com.google.gson.annotations.SerializedName;
 

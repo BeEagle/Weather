@@ -1,12 +1,6 @@
 # Weather
 一个小的天气App,主要用于学习Retrofit+OkHttp+RxJava+Gson
 
-##效果图
-![image](https://github.com/shucc/Weather/blob/master/demoImages/one.png)
-![image](https://github.com/shucc/Weather/blob/master/demoImages/two.png)
-![image](https://github.com/shucc/Weather/blob/master/demoImages/three.png)
-![image](https://github.com/shucc/Weather/blob/master/demoImages/four.png)
-
 ##项目中使用的Key
 使用的是[和风天气](http://www.heweather.com/)接口，申请后获得一个key，在weatherapp/src/main/java/cchao/org/weatherapp/api中新建一个Key.java
 
@@ -21,10 +15,6 @@ public class Key {
 
 A library to bring fully animated Material Design components to pre-Lolipop Android.
 
-**[https://github.com/square/otto](https://github.com/square/otto)**
-
-An enhanced Guava-based event bus with emphasis on Android support.
-
 **[https://github.com/google/gson](https://github.com/google/gson)**
 
 A Java serialization library that can convert Java Objects into JSON and back.
@@ -36,6 +26,10 @@ An HTTP+SPDY client for Android and Java applications.
 **[https://github.com/square/retrofit](https://github.com/square/retrofit)**
 
 Type-safe HTTP client for Android and Java by Square, Inc.
+
+**[https://github.com/ReactiveX/RxAndroid](https://github.com/ReactiveX/RxAndroid)**
+
+RxJava bindings for Android.
 
 ###License
 
