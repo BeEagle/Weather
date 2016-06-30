@@ -7,7 +7,7 @@ import cchao.org.weatherapp.App;
  */
 public class Log {
 
-    private static final boolean DEBUG = false;
+    private static final boolean DEBUG = true;
     private static final String TAG = App.getInstance().getPackageName();
 
     public static void i(String content) {

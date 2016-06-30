@@ -1,15 +1,21 @@
 package cchao.org.weatherapp.utils;
 
+import com.squareup.okhttp.HttpUrl;
 import com.squareup.okhttp.Interceptor;
 import com.squareup.okhttp.OkHttpClient;
 import com.squareup.okhttp.Request;
 import com.squareup.okhttp.Response;
 
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.lang.reflect.ParameterizedType;
 import java.util.concurrent.TimeUnit;
 
 import cchao.org.weatherapp.api.Api;
+import okio.BufferedSink;
 import okio.BufferedSource;
+import okio.Okio;
+import okio.Sink;
 import retrofit.GsonConverterFactory;
 import retrofit.Retrofit;
 import retrofit.RxJavaCallAdapterFactory;
